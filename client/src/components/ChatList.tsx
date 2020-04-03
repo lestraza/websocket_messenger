@@ -18,11 +18,14 @@ export default class ChatList extends React.Component<IChatListProps> {
   public renderChatPreviews() {
       const { users } = this.mainStore
       return users.map((user, i) => {
-          <ChatPreview user={user}/>
+        return  <ChatPreview user={user}/>
       })
   }
 
   public render() {
-    return <div>{this.renderChatPreviews()}</div>;
+    return <div className="chat_list">
+      <div className='chat_list_header'></div>
+      {this.renderChatPreviews()}
+      </div>;
   }
 }
