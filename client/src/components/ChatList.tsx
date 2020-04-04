@@ -17,9 +17,7 @@ export default class ChatList extends React.Component<IChatListProps> {
   @action.bound
   public renderChatPreviews() {
       const { users } = this.mainStore
-      return users.map((user, i) => {
-        return  <ChatPreview user={user}/>
-      })
+      return users.map((user, i) => <ChatPreview user={user}/>)
   }
 
   public render() {

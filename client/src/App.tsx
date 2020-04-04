@@ -11,7 +11,7 @@ export default class App extends React.Component {
         <div className="main"></div>
         <div className="app_container">
           <ChatList />
-          <Dialog name={"wefew"} />
+          <Dialog />
         </div>
       </div>
     );

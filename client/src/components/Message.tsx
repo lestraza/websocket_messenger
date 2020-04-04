@@ -7,7 +7,7 @@ export interface IMessageProps {
     message: IMessage
 }
 
-@inject("store")
+@inject('store')
 @observer
 export default class Message extends React.Component<IMessageProps> {
   mainStore = this.injected.store;
@@ -25,24 +25,23 @@ export default class Message extends React.Component<IMessageProps> {
 
   @computed
   private get currentDate() {
-    const { message } = this.props;
-    const date = new Date(message.timeStamp)
-    const formatedDate = date.toLocaleString('ru', {
+    const { timeStamp } = this.props.message;
+    const date = new Date(timeStamp)
+    return date.toLocaleString('ru', {
         hour: '2-digit',
         minute: '2-digit'
     })
-    return formatedDate
   }
 
   public render() {
-    const { message } = this.props;
+    const { fullName, text, } = this.props.message;
     return (
         <div className={`message_screen_container ${this.isOutgoing? 'outgoing' : 'incoming'}`}>
           <div className="message_screen_container__user_name">
-            {message.fullName}
+            {fullName}
           </div>
           <div className="message_screen_container__message">
-            {message.text}
+            {text}
             <div className="message_screen_container__time_stamp">
               {this.currentDate}
             </div>

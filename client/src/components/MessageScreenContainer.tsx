@@ -6,7 +6,7 @@ import Message from "./Message";
 
 export interface IMessageScreenContainerProps {}
 
-@inject("store")
+@inject('store')
 @observer
 export default class MessageScreenContainer extends React.Component<
   IMessageScreenContainerProps

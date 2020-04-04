@@ -5,7 +5,7 @@ import MainStore from '../store/MainStore';
 import MessageScreenContainer from './MessageScreenContainer';
 
 export interface IDialogProps {
-    name: string
+
 }
 @inject('store') @observer
 export default class Dialog extends Component<IDialogProps> {
@@ -30,7 +30,6 @@ export default class Dialog extends Component<IDialogProps> {
   }
   public render() {
       const { newMessage } = this.mainStore
-      console.log(newMessage);
     return (
       <div className='dialog'>
         <div className="dialog_header"></div>

@@ -1,5 +1,6 @@
 import { observable, action } from "mobx";
 import { strict } from "assert";
+import link from '../images/silvio.jpg'
 
 export interface IUser {
   id: string;
@@ -39,7 +40,7 @@ class MainStore {
       id: "35s4d354",
       name: "Erjan",
       lastName: "Egoev",
-      avatarUrl: "sldkjfls",
+      avatarUrl: link,
       isOnline: true,
     };
     this.users = [...this.users, newUser];
