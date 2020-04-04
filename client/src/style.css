@@ -1,0 +1,85 @@
+html, body, div, input {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+}
+.wrapper {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: #ededed;
+}
+.header {
+    width: 100%;
+    height: 160px;
+    background-color: rgb(77, 150, 112);
+}
+.app_container {
+    width: 1396px;
+    height: 95%;
+    margin: 0 auto;
+    background-color: white;
+    position: absolute;
+    z-index: 7;
+    top: 3%;
+    right: 15%;
+    margin: auto;
+    display: flex;
+}
+.app_container > div {
+    border: 1px solid rgb(77, 150, 112);
+}
+.chat_list {
+    width: 30%;
+    
+}
+
+.dialog {
+    width: 70%;
+}
+.dialog_header, .chat_list_header{
+    height: 6%;
+    width: 100%;
+    background-color: #ededed;
+}
+.dialog_screen {
+    height: 85%;
+}
+.dialog_type_message {
+    height: 9%;
+    width: 100%;
+    background-color: #ededed;
+    display: flex;
+    box-sizing: border-box;
+}
+.dialog_emodji{
+    width: 6%;
+    height: 100%;
+}
+.dialog_input {
+    display: inline-block;
+    width: 80%;
+    height: 50%;
+    margin: 15px 15px;
+    border: none;
+    border-radius: 10px;
+    border: 1px #cccccc;
+    padding: 3px 3px 3px 15px;
+    font-size: 15px;
+}
+.dialog_input:focus {
+    outline: none;
+
+}
+.dialog_send_message_button {
+    width: 6%;
+    height: 50%;
+    margin: 15px 20px;
+    border: 1px solid rgb(77, 150, 112);
+    text-align: center;
+}
+.message_screen_container {
+    min-height: 20px;
+    font-size: 15px;
+}
