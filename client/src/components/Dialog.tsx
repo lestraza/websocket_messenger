@@ -1,4 +1,4 @@
-import React, { Component, FormEventHandler} from 'react';
+import React, { Component} from 'react';
 import { action } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import MainStore from '../store/MainStore';

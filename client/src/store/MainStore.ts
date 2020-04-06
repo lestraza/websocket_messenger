@@ -30,6 +30,9 @@ class MainStore {
   @observable
   public newMessage: string = "";
 
+  @observable
+  public modal: string = ''
+
   constructor() {
       this.getUsers()
   }
