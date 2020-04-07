@@ -18,6 +18,18 @@ export interface IMessage {
 
 class MainStore {
     @observable
+    public clientEmail: string = ''
+
+    @observable
+    public clientPassword: string = ''
+
+    @observable
+    public clientName: string = ''
+
+    @observable
+    public clientLastName: string = ''
+
+    @observable
     public users: IUser[] = []
 
     @observable
@@ -31,6 +43,9 @@ class MainStore {
 
     @observable
     public modal: string = ''
+
+    @observable
+    public isAuthenticated: boolean = false
 
     constructor() {
         this.getUsers()
@@ -47,6 +62,9 @@ class MainStore {
         }
         this.users = [...this.users, newUser]
     }
+
+    @action.bound
+    public saveInputValue() {}
 
     @action.bound
     public sendMessage() {
