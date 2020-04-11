@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { IUser } from '../store/MainStore'
+import { IUser } from '../../../store/MainStore'
 
 export interface IChatPreviewProps {
     user: IUser

@@ -1,6 +1,6 @@
 import * as React from 'react'
-import ChatList from './ChatList'
-import Dialog from './Dialog'
+import ChatList from './Chatlist/ChatList'
+import Dialog from './Dialog/Dialog'
 
 export interface IMainChatPageProps {}
 

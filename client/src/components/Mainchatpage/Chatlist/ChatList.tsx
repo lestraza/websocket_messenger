@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { action } from 'mobx'
-import MainStore from '../store/MainStore'
+import MainStore from '../../../store/MainStore'
 import ChatPreview from './ChatPreview'
 import { inject, observer } from 'mobx-react'
+import Logout from '../Logout/Logout'
 
 export interface IChatListProps {}
 
@@ -24,7 +25,9 @@ export default class ChatList extends React.Component<IChatListProps> {
     public render() {
         return (
             <div className="chat-list">
-                <div className="chat-list__header"></div>
+                <div className="chat-list__header">
+                    <Logout />
+                </div>
                 {this.renderChatPreviews()}
             </div>
         )
