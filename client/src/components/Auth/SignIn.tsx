@@ -1,16 +1,19 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { Link } from 'react-router-dom'
-import MainStore, { IRegisterProps } from '../../store/MainStore'
+import { IGetStore } from '../../store/MainStore'
 import { action, observable } from 'mobx'
+import { IRegisterProps } from './store/Auth.store'
 
 export interface ISignInProps {}
-@inject('store')
+@inject('getStore')
 @observer
 export default class SignIn extends React.Component<ISignInProps> {
-    mainStore = this.injected.store
+    mainStore = this.injected.getStore('mainStore')
+    authStore = this.injected.getStore('authStore')
+
     private get injected() {
-        return this.props as ISignInProps & { store: MainStore }
+        return this.props as ISignInProps & IGetStore
     }
 
     @observable
@@ -18,19 +21,19 @@ export default class SignIn extends React.Component<ISignInProps> {
 
     @action.bound
     onChangeSaveValue(e: React.FormEvent<HTMLInputElement>) {
-        const { saveInputValue } = this.mainStore
+        const { saveInputValueRegisterForm } = this.authStore
         const value = e.currentTarget.value
         const prop = e.currentTarget.dataset.id
         if (prop) {
-            saveInputValue(prop as keyof IRegisterProps, value)
+            saveInputValueRegisterForm(prop as keyof IRegisterProps, value)
         }
     }
 
     @action.bound
     onSubmitLogin(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
-        const { clientLogin } = this.mainStore
-        const { email, password } = this.mainStore.clientRegisterProps
+        const { clientLogin } = this.authStore
+        const { email, password } = this.authStore.clientRegisterProps
         if (email && password) {
             this.requiredDataWarning = false
             clientLogin()
@@ -39,7 +42,7 @@ export default class SignIn extends React.Component<ISignInProps> {
         }
     }
     public render() {
-        const { email, password } = this.mainStore.clientRegisterProps
+        const { email, password } = this.authStore.clientRegisterProps
         return (
             <div className="auth-container">
                 <p>Welcome to Messenger</p>

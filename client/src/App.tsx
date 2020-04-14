@@ -1,24 +1,25 @@
 import React from 'react'
-import './style.scss'
+import './Resourses/style.scss'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
-import MainStore from './store/MainStore'
+import { IGetStore } from './store/MainStore'
 import SignIn from './components/Auth/SignIn'
 import { inject, observer } from 'mobx-react'
 import MainChatPage from './components/Mainchatpage/MainChatPage'
 import RegisterClient from './components/Auth/RegisterClient'
 
 export interface IAppProps {}
-@inject('store')
+@inject('getStore')
 @observer
 export default class App extends React.Component<IAppProps> {
-    mainStore = this.injected.store
+    mainStore = this.injected.getStore('mainStore')
+    authStore = this.injected.getStore('authStore')
 
     private get injected() {
-        return this.props as IAppProps & { store: MainStore }
+        return this.props as IAppProps & IGetStore
     }
 
     render() {
-        const { isAuthenticated } = this.mainStore
+        const { isAuthenticated } = this.authStore
         return (
             <div className="wrapper">
                 <div className="header"></div>

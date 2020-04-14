@@ -7,7 +7,7 @@ import App from './App'
 const store = new MainStore()
 
 ReactDOM.render(
-    <Provider store={store}>
+    <Provider getStore={store.getStore}>
         <App />
     </Provider>,
     document.getElementById('root')
