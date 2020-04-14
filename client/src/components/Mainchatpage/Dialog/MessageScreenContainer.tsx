@@ -1,5 +1,5 @@
 import * as React from 'react'
-import MainStore from '../store/MainStore'
+import MainStore from '../../../store/MainStore'
 import { action } from 'mobx'
 import { inject, observer } from 'mobx-react'
 import Message from './Message'

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
-import MainStore, { IMessage } from '../store/MainStore'
+import MainStore, { IMessage } from '../../../store/MainStore'
 import { computed } from 'mobx'
 
 export interface IMessageProps {

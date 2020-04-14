@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { action } from 'mobx'
 import { inject, observer } from 'mobx-react'
-import MainStore from '../store/MainStore'
+import MainStore from '../../../store/MainStore'
 import MessageScreenContainer from './MessageScreenContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'

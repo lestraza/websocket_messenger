@@ -25,28 +25,37 @@ const { Dialog } = require("./models/dialog");
 //=====================================
 
 app.post("/api/users/register", (req, res) => {
-  const user = new User(req.body);
-
-  user.save((err, doc) => {
-    if (err) return res.json({ success: false, err });
-    res.status(200).json({
-      success: true,
-      userdata: doc,
-    });
+  const newUser = new User(req.body);
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (user) {
+      return res.status(403).json({
+        loginSuccess: false,
+        message:
+          "A user with this email already exists. Try other email again.",
+      });
+    } else {
+      newUser.save((err, doc) => {
+        if (err) return res.json({ success: false, err });
+        res.status(200).json({
+          success: true,
+          userdata: doc,
+        });
+      });
+    }
   });
 });
 
 app.post("/api/users/login", (req, res) => {
   // find email
   User.findOne({ email: req.body.email }, (err, user) => {
-    if (!user)
+    if (!user || err)
       return res
         .status(403)
         .json({ loginSuccess: false, message: "Email not found. Try again." });
 
     // check password
     user.comparePassword(req.body.password, (err, isMatch) => {
-      if (!isMatch)
+      if (!isMatch || err)
         return res
           .status(403)
           .json({ loginSuccess: false, message: "Wrong password. Try again." });
@@ -58,6 +67,7 @@ app.post("/api/users/login", (req, res) => {
         res.cookie("user_token", user.token).status(200).json({
           loginSuccess: true,
           token: user.token,
+          id: user._id,
         });
       });
     });
@@ -67,7 +77,8 @@ app.post("/api/users/login", (req, res) => {
 app.post("/api/users/auth", auth, (req, res) => {
   res.status(200).json({
     isAuth: true,
-    email: req.user.email,
+    id: req.user._id,
+    avatarUrl: res.avatarUrl,
     name: req.user.name,
     lastname: req.user.lastname,
     dialogs: req.user.dialogs,
@@ -123,7 +134,7 @@ app.post("/api/users/addContact", (req, res) => {
                 }
               });
             } else {
-              res.status(400).json({
+              res.status(401).json({
                 error: err,
               });
             }
@@ -143,9 +154,7 @@ app.post("/api/messages/addMessage", (req, res) => {
     _id: { $in: mongoose.Types.ObjectId(dialogId) },
   }).exec((err, dialog) => {
     if (dialog) {
-      console.log(dialog);
       dialog.messages.push(JSON.stringify(message));
-
       dialog.save((err, doc) => {
         res.status(200).json({
           success: true,
@@ -156,7 +165,7 @@ app.post("/api/messages/addMessage", (req, res) => {
   });
 });
 
-const port = 3001;
+const port = process.env.PORT || 3006;
 app.listen(port, () => {
   console.log(`Server runnig at ${port}`);
 });

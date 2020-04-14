@@ -205,3 +205,21 @@ body,
         margin: 8px 0 0 30px;
     }
 }
+
+.create-account {
+    margin: 0 auto;
+    max-width: 600px;
+    &__title {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    &__form {
+        display: flex;
+        flex-direction: column;
+        max-width: 500px;
+    }
+
+    &__warning {
+        color: #e21515;
+    }
+}
