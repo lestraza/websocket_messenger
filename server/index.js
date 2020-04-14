@@ -155,7 +155,6 @@ app.post("/api/messages/addMessage", (req, res) => {
   }).exec((err, dialog) => {
     if (dialog) {
       dialog.messages.push(JSON.stringify(message));
-
       dialog.save((err, doc) => {
         res.status(200).json({
           success: true,
