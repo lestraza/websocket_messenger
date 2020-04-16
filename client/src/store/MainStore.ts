@@ -1,3 +1,4 @@
+import { AbstractStore } from './Abstract.store'
 import { AuthStore } from './../components/Auth/store/Auth.store'
 import { SettingsStore } from './../components/Mainchatpage/SettingsBar/store/Settings.store'
 import { observable, action, runInAction } from 'mobx'
@@ -30,7 +31,7 @@ export interface IGetStore {
     getStore<T extends keyof IInnerStores>(storeName: T): IInnerStores[T]
 }
 
-class MainStore {
+class MainStore extends AbstractStore {
     @observable
     public users: IUser[] = []
 
@@ -44,10 +45,18 @@ class MainStore {
     public clientId: string = ''
 
     @observable
-    private innerStores: IInnerStores = {
+    public innerStores: IInnerStores = {
         settingsStore: new SettingsStore(),
         mainStore: this,
         authStore: new AuthStore(),
+    }
+
+    constructor() {
+        super()
+        Object.keys(this.innerStores).forEach((storeName) => {
+            const store = this.innerStores[storeName as keyof IInnerStores]
+            store.setStore(this)
+        })
     }
 
     @action.bound

@@ -48,7 +48,7 @@ export default class ChatList extends React.Component<IChatListProps> {
                             >
                                 <FontAwesomeIcon
                                     icon={faBars}
-                                    color={'#bababa'}
+                                    color={'#8e8e8e'}
                                     size={'lg'}
                                 />
                             </div>

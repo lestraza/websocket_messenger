@@ -44,24 +44,34 @@ export default class SignIn extends React.Component<ISignInProps> {
     public render() {
         const { email, password } = this.authStore.clientRegisterProps
         return (
-            <div className="auth-container">
+            <div className="auth-container form">
                 <p>Welcome to Messenger</p>
                 <form className="auth-form" onSubmit={this.onSubmitLogin}>
-                    <div>Email address</div>
-                    <input
-                        type="email"
-                        data-id="email"
-                        value={email}
-                        onChange={this.onChangeSaveValue}
-                    />
-                    <div>Password</div>
-                    <input
-                        type="password"
-                        data-id="password"
-                        value={password}
-                        onChange={this.onChangeSaveValue}
-                    />
-                    <input type="submit" value="Sign In" />
+                    <div className="form-row">
+                        <div className="form-label">Email address</div>
+                        <input
+                            type="email"
+                            data-id="email"
+                            value={email}
+                            onChange={this.onChangeSaveValue}
+                        />
+                    </div>
+                    <div className="form-row">
+                        <div className="form-label">Password</div>
+                        <input
+                            type="password"
+                            data-id="password"
+                            value={password}
+                            onChange={this.onChangeSaveValue}
+                        />
+                    </div>
+                    <div className="form-row">
+                        <input
+                            className="button button--primary"
+                            type="submit"
+                            value="Sign In"
+                        />
+                    </div>
                 </form>
 
                 {this.requiredDataWarning && (
@@ -71,7 +81,7 @@ export default class SignIn extends React.Component<ISignInProps> {
                 )}
 
                 <div className="create-account">
-                    New to messenger?
+                    New to messenger?&nbsp;
                     <Link to={'/register'}>Create an account</Link>
                 </div>
             </div>

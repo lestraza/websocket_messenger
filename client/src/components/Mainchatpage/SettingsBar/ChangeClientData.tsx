@@ -42,11 +42,11 @@ export default class SettingsClientData extends React.Component<
         const { name, lastname, email, password } = this.authStore.newSettings
         return (
             <form
-                className="client-settings__data-change-form"
+                className="client-settings__data-change-form form"
                 onSubmit={this.onSubmitForm}
             >
-                <div className="client-settings__data-change-box">
-                    <div className="client-settings__data-change-title">
+                <div className="form-row">
+                    <div className="client-settings__data-change-title form-label">
                         Name
                     </div>
                     <FormInput
@@ -60,8 +60,8 @@ export default class SettingsClientData extends React.Component<
                     />
                 </div>
 
-                <div className="client-settings__data-change-box">
-                    <div className="client-settings__data-change-title">
+                <div className="form-row">
+                    <div className="client-settings__data-change-title form-label">
                         Lastname
                     </div>
                     <FormInput
@@ -75,8 +75,8 @@ export default class SettingsClientData extends React.Component<
                     />
                 </div>
 
-                <div className="client-settings__data-change-box">
-                    <div className="client-settings__data-change-title">
+                <div className="form-row">
+                    <div className="client-settings__data-change-title form-label">
                         Email
                     </div>
                     <FormInput
@@ -90,8 +90,8 @@ export default class SettingsClientData extends React.Component<
                     />
                 </div>
 
-                <div className="client-settings__data-change-box">
-                    <div className="client-settings__data-change-title">
+                <div className="form-row">
+                    <div className="client-settings__data-change-title form-label">
                         Password
                     </div>
                     <FormInput
@@ -106,8 +106,8 @@ export default class SettingsClientData extends React.Component<
                 </div>
                 <input
                     type="submit"
-                    value="SUBMIT"
-                    className={'client-settings__form-submit'}
+                    value="Save"
+                    className={'button button--primary button--small'}
                 />
             </form>
         )

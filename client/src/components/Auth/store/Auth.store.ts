@@ -1,8 +1,9 @@
+import { AbstractStore } from './../../../store/Abstract.store'
 import {
     ISaveProfilePhotoResponse,
     saveProfilePhotoReq,
 } from './../../../requests/index'
-import { action, observable, runInAction } from 'mobx'
+import { action, observable, runInAction, computed } from 'mobx'
 import {
     registerClient,
     loginClientReq,
@@ -35,7 +36,7 @@ export interface IChangeSettingsProps {
     _id: string
 }
 
-export class AuthStore {
+export class AuthStore extends AbstractStore {
     @observable
     public clientRegisterProps: IRegisterProps = {
         name: '',
@@ -85,7 +86,13 @@ export class AuthStore {
     @observable
     public isShowSettingsBar: boolean = false
 
+    @computed
+    private get settingsStore() {
+        return this.mainStore.getStore('settingsStore')
+    }
+
     constructor() {
+        super()
         this.authClient()
     }
 
@@ -99,7 +106,7 @@ export class AuthStore {
 
     @action.bound
     public registerNewClient() {
-        registerClient(this.clientRegisterProps)
+        return registerClient(this.clientRegisterProps)
             .then(() => {
                 runInAction(() => {
                     this.clientRegisterProps = {

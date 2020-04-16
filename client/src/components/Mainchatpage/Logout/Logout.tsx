@@ -20,7 +20,7 @@ export default class Logout extends React.Component<ILogoutProps> {
     }
     public render() {
         return (
-            <div className="logout__container">
+            <div className="logout-container">
                 <div onClick={this.onClickLogout}>Logout</div>
             </div>
         )
