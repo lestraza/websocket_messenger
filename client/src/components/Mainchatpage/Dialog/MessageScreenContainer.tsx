@@ -1,20 +1,20 @@
 import * as React from 'react'
-import MainStore from '../../../store/MainStore'
+import MainStore, { IGetStore } from '../../../store/MainStore'
 import { action } from 'mobx'
 import { inject, observer } from 'mobx-react'
 import Message from './Message'
 
 export interface IMessageScreenContainerProps {}
 
-@inject('store')
+@inject('getStore')
 @observer
 export default class MessageScreenContainer extends React.Component<
     IMessageScreenContainerProps
 > {
-    mainStore = this.injected.store
+    mainStore = this.injected.getStore('mainStore')
 
     private get injected() {
-        return this.props as IMessageScreenContainerProps & { store: MainStore }
+        return this.props as IMessageScreenContainerProps & IGetStore
     }
 
     @action.bound

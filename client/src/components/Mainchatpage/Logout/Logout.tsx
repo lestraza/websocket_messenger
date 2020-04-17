@@ -1,26 +1,26 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { action } from 'mobx'
-import MainStore from '../../../store/MainStore'
+import MainStore, { IGetStore } from '../../../store/MainStore'
 
 export interface ILogoutProps {}
 
-@inject('store')
+@inject('getStore')
 @observer
 export default class Logout extends React.Component<ILogoutProps> {
-    mainStore = this.injected.store
+    authStore = this.injected.getStore('authStore')
 
     private get injected() {
-        return this.props as ILogoutProps & { store: MainStore }
+        return this.props as ILogoutProps & IGetStore
     }
     @action.bound
     onClickLogout() {
-        const { logout } = this.mainStore
+        const { logout } = this.authStore
         logout()
     }
     public render() {
         return (
-            <div className="logout__container">
+            <div className="logout-container">
                 <div onClick={this.onClickLogout}>Logout</div>
             </div>
         )
