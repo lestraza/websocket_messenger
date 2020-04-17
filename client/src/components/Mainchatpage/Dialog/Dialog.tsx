@@ -1,20 +1,20 @@
 import React, { Component } from 'react'
 import { action } from 'mobx'
 import { inject, observer } from 'mobx-react'
-import MainStore, { IGetStore } from '../../../store/MainStore'
+import MainStore from '../../../store/MainStore'
 import MessageScreenContainer from './MessageScreenContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { faSmile } from '@fortawesome/free-regular-svg-icons'
 
 export interface IDialogProps {}
-@inject('getStore')
+@inject('store')
 @observer
 export default class Dialog extends Component<IDialogProps> {
-    mainStore = this.injected.getStore('mainStore')
+    mainStore = this.injected.store
 
     private get injected() {
-        return this.props as IDialogProps & IGetStore
+        return this.props as IDialogProps & { store: MainStore }
     }
 
     @action.bound

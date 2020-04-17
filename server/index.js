@@ -85,50 +85,6 @@ app.post("/api/users/auth", auth, (req, res) => {
   });
 });
 
-app.post("/api/users/addAvatar", (req, res) => {
-  const { avatarUrl, _id } = req.body;
-  console.log(_id);
-  User.findOne({ _id: req.body }, (err, user) => {
-    if (user) {
-      user.avatarUrl = avatarUrl;
-      user.save((err, doc) => {
-        res.status(200).json({
-          success: true,
-          userData: doc,
-        });
-      });
-    } else {
-      return res.status(403).json({
-        success: false,
-        message: "Cannot find user.",
-      });
-    }
-  });
-});
-
-app.post("/api/users/updateClient", (req, res) => {
-  User.findOne({ _id: req.body }, (err, user) => {
-    if (user) {
-      for (key in req.body) {
-        if (key !== "_id" && req.body[key] !== "") {
-          user[key] = req.body[key];
-        }
-      }
-      user.save((err, doc) => {
-        res.status(200).json({
-          success: true,
-          userData: doc,
-        });
-      });
-    } else {
-      return res.status(403).json({
-        success: false,
-        message: "Cannot find user.",
-      });
-    }
-  });
-});
-
 app.post("/api/users/addContact", (req, res) => {
   const { userId, contactId } = req.body;
   User.find({

@@ -1,17 +1,7 @@
-import { AbstractStore } from './Abstract.store'
-import { AuthStore } from './../components/Auth/store/Auth.store'
-import { SettingsStore } from './../components/Mainchatpage/SettingsBar/store/Settings.store'
 import { observable, action, runInAction } from 'mobx'
 import link from '../images/silvio.jpg'
 import { registerClient, loginClientReq, authClientReq } from '../requests'
 import { Z_ASCII } from 'zlib'
-
-export interface IMessage {
-    userId: string
-    fullName: string
-    text: string
-    timeStamp: string
-}
 
 export interface IUser {
     id: string
@@ -21,17 +11,38 @@ export interface IUser {
     isOnline: boolean
 }
 
-export interface IInnerStores {
-    settingsStore: SettingsStore
-    mainStore: MainStore
-    authStore: AuthStore
+export interface IMessage {
+    userId: string
+    fullName: string
+    text: string
+    timeStamp: string
 }
 
-export interface IGetStore {
-    getStore<T extends keyof IInnerStores>(storeName: T): IInnerStores[T]
+export interface IRegisterProps {
+    name?: string
+    lastname?: string
+    email: string
+    password: string
 }
 
-class MainStore extends AbstractStore {
+class MainStore {
+    @observable
+    public clientRegisterProps: IRegisterProps = {
+        name: '',
+        lastname: '',
+        email: '',
+        password: '',
+    }
+
+    @observable
+    public client: IUser = {
+        id: '',
+        name: '',
+        lastName: '',
+        avatarUrl: '',
+        isOnline: false,
+    }
+
     @observable
     public users: IUser[] = []
 
@@ -39,29 +50,31 @@ class MainStore extends AbstractStore {
     public currentDialog: IMessage[] = []
 
     @observable
-    public newMessage: string = ''
-
-    @observable
     public clientId: string = ''
 
     @observable
-    public innerStores: IInnerStores = {
-        settingsStore: new SettingsStore(),
-        mainStore: this,
-        authStore: new AuthStore(),
-    }
+    public newMessage: string = ''
+
+    @observable
+    public modal: string = ''
+
+    @observable
+    public isAuthenticated: boolean = false
+
+    @observable
+    public isRegistered: boolean = false
+
+    @observable
+    public errorExistedEmail: string = ''
+
+    @observable
+    public errorAuthentication: string = ''
+
+    @observable
+    public isAuthenticatedByToken: boolean = false
 
     constructor() {
-        super()
-        Object.keys(this.innerStores).forEach((storeName) => {
-            const store = this.innerStores[storeName as keyof IInnerStores]
-            store.setStore(this)
-        })
-    }
-
-    @action.bound
-    public getStore(storeName: keyof IInnerStores) {
-        return this.innerStores[storeName]
+        this.authClient()
     }
 
     @action.bound
@@ -74,6 +87,106 @@ class MainStore extends AbstractStore {
             isOnline: true,
         }
         this.users = [...this.users, newUser]
+    }
+
+    @action.bound
+    public saveInputValue(prop: keyof IRegisterProps, value: string) {
+        this.clientRegisterProps[prop] = value
+    }
+
+    @action.bound
+    public registerNewClient() {
+        registerClient(this.clientRegisterProps)
+            .then(() => {
+                runInAction(() => {
+                    this.clientRegisterProps = {
+                        name: '',
+                        lastname: '',
+                        email: '',
+                        password: '',
+                    }
+                    this.isRegistered = true
+                })
+            })
+            .catch((err) => {
+                runInAction(() => {
+                    this.errorExistedEmail = err.message
+                })
+            })
+    }
+
+    @action.bound
+    public clientLogin() {
+        loginClientReq(this.clientRegisterProps)
+            .then((res) => {
+                runInAction(() => {
+                    this.clientRegisterProps = {
+                        email: '',
+                        password: '',
+                    }
+                    this.clientId = res.id
+                    this.authClient()
+                })
+            })
+            .catch((err) => {
+                runInAction(() => {
+                    this.errorAuthentication = err.message
+                })
+            })
+    }
+
+    @action.bound
+    public getCookie(name: string) {
+        const decodeCookies: string[] = decodeURIComponent(
+            document.cookie
+        ).split(';')
+        for (let i = 0; i < decodeCookies.length; i++) {
+            let z = decodeCookies[i]
+            while (z.charAt(0) == ' ') {
+                z = z.substring(1)
+            }
+            if (z.indexOf(name) == 0) {
+                return z.substring(name.length, z.length)
+            }
+        }
+        return
+    }
+
+    @action.bound
+    public authClient() {
+        return new Promise((resolve, reject) => {
+            const cookieName: string = 'user_token='
+            const token: any = this.getCookie(cookieName)
+            authClientReq(token)
+                .then((res) => {
+                    runInAction(() => {
+                        this.client = {
+                            id: res.id,
+                            name: res.name,
+                            lastName: res.lastname,
+                            avatarUrl: res.avatarUrl,
+                            isOnline: res.isOnline,
+                        }
+                        this.isAuthenticated = true
+                        resolve()
+                    })
+                })
+                .catch((err) => {
+                    runInAction(() => {
+                        this.isAuthenticated = false
+                        reject()
+                    })
+                })
+        })
+    }
+
+    @action.bound
+    public logout() {
+        let cookieName: string = 'user_token='
+        const token: any = this.getCookie(cookieName)
+        //cookieName = `${cookieName}${token}; Path=/`
+        document.cookie = `${cookieName}; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`
+        this.authClient()
     }
 
     @action.bound
