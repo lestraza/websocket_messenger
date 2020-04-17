@@ -1,9 +1,7 @@
+import { DialogStore } from './../components/Mainchatpage/Dialog/store/Dialog.store'
 import { AuthStore } from './../components/Auth/store/Auth.store'
-import { SettingsStore } from './../components/Mainchatpage/SettingsBar/store/Settings.store'
-import { observable, action, runInAction } from 'mobx'
+import { observable, action } from 'mobx'
 import link from '../images/silvio.jpg'
-import { registerClient, loginClientReq, authClientReq } from '../requests'
-import { Z_ASCII } from 'zlib'
 
 export interface IMessage {
     userId: string
@@ -21,7 +19,7 @@ export interface IUser {
 }
 
 export interface IInnerStores {
-    settingsStore: SettingsStore
+    dialogStore: DialogStore
     mainStore: MainStore
     authStore: AuthStore
 }
@@ -45,7 +43,7 @@ class MainStore {
 
     @observable
     private innerStores: IInnerStores = {
-        settingsStore: new SettingsStore(),
+        dialogStore: new DialogStore(),
         mainStore: this,
         authStore: new AuthStore(),
     }

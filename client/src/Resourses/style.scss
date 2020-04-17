@@ -62,11 +62,20 @@ body,
     &__header {
         @extend .chat-header;
         border-right: 1px solid #c5c5c5;
+        display: flex;
+        justify-content: space-between;
     }
 
     &__header-settings-button {
         width: 50px;
         height: 50px;
+    }
+
+    &__header-settings-button {
+        flex-grow: 1;
+    }
+    &__header-logout {
+        flex-grow: 1;
     }
 }
 
@@ -321,5 +330,20 @@ body,
 
     &__warning {
         color: #e21515;
+    }
+}
+
+.add-contact {
+    &__container {
+        width: 600px;
+        height: 500px;
+        position: absolute;
+        z-index: 7;
+        top: 174px;
+        right: 448px;
+        background-color: #e5bcbc;
+    }
+    &__form {
+        margin: 0 auto;
     }
 }

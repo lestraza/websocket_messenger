@@ -5,6 +5,8 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 const app = express();
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
@@ -86,8 +88,7 @@ app.post("/api/users/auth", auth, (req, res) => {
 });
 
 app.post("/api/users/addAvatar", (req, res) => {
-  const { avatarUrl, _id } = req.body;
-  console.log(_id);
+  const { avatarUrl } = req.body;
   User.findOne({ _id: req.body }, (err, user) => {
     if (user) {
       user.avatarUrl = avatarUrl;
@@ -129,35 +130,57 @@ app.post("/api/users/updateClient", (req, res) => {
   });
 });
 
+//=====================================
+//              DIALOG
+//=====================================
+app.post("/api/users/findContact", (req, res) => {
+  // find email
+  const { email } = req.body;
+  User.findOne({ email: email }, (err, user) => {
+    if (!user || err) {
+      return res
+        .status(403)
+        .json({ loginSuccess: false, message: "Email not found. Try again." });
+    }
+    if (user) {
+      res.status(200).json({
+        id: user._id,
+        avatarUrl: user.avatarUrl,
+        name: user.name,
+        lastname: user.lastname,
+      });
+    }
+  });
+});
+
 app.post("/api/users/addContact", (req, res) => {
-  const { userId, contactId } = req.body;
+  const { clientId, contactId } = req.body;
+  console.log(clientId, contactId);
   User.find({
     _id: {
       $in: [
-        mongoose.Types.ObjectId(userId),
+        mongoose.Types.ObjectId(clientId),
         mongoose.Types.ObjectId(contactId),
       ],
     },
   }).exec((err, docs) => {
-    const user = docs.find((doc) => doc.id === userId);
+    const user = docs.find((doc) => doc.id === clientId);
     const contact = docs.find((doc) => doc.id === contactId);
-
+    console.log(user, contact);
     if (user && contact) {
       if (!user.contacts.includes(contactId)) {
         const dialog = new Dialog({
           messages: [],
         });
-
         const dialogId = dialog.id;
         user.contacts.push({
           contactId,
           dialogId,
         });
         contact.contacts.push({
-          contactId: userId,
+          contactId: clientId,
           dialogId,
         });
-
         //user.dialogs.push(dialog.id)
         // contact.dialogs.push(dialog.id)
         dialog.save((err, dialogdoc) => {
@@ -169,7 +192,7 @@ app.post("/api/users/addContact", (req, res) => {
                 if (!err) {
                   res.status(200).json({
                     success: true,
-                    userData: [userdoc, contactdoc, dialogdoc],
+                    contacts: contactdoc,
                   });
                 } else {
                   res.status(401).json({
@@ -211,6 +234,10 @@ app.post("/api/messages/addMessage", (req, res) => {
 });
 
 const port = process.env.PORT || 3006;
-app.listen(port, () => {
+// app.listen(port, () => {
+//     console.log(`Server runnig at ${port}`);
+// });
+
+server.listen(port, () => {
   console.log(`Server runnig at ${port}`);
 });

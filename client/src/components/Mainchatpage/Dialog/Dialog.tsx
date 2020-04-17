@@ -1,17 +1,19 @@
 import React, { Component } from 'react'
 import { action } from 'mobx'
 import { inject, observer } from 'mobx-react'
-import MainStore, { IGetStore } from '../../../store/MainStore'
+import { IGetStore } from '../../../store/MainStore'
 import MessageScreenContainer from './MessageScreenContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { faSmile } from '@fortawesome/free-regular-svg-icons'
+import AddContact from '../Contacts/AddContact'
 
 export interface IDialogProps {}
 @inject('getStore')
 @observer
 export default class Dialog extends Component<IDialogProps> {
     mainStore = this.injected.getStore('mainStore')
+    dialogStore = this.injected.getStore('dialogStore')
 
     private get injected() {
         return this.props as IDialogProps & IGetStore
@@ -31,6 +33,7 @@ export default class Dialog extends Component<IDialogProps> {
     }
     public render() {
         const { newMessage } = this.mainStore
+        const { isShowAddContactModal } = this.dialogStore
         return (
             <div className="dialog">
                 <div className="dialog__header"></div>
@@ -63,6 +66,7 @@ export default class Dialog extends Component<IDialogProps> {
                         />
                     </div>
                 </form>
+                {isShowAddContactModal && <AddContact />}
             </div>
         )
     }
