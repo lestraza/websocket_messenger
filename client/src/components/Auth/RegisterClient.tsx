@@ -3,10 +3,10 @@ import { inject, observer } from 'mobx-react'
 import MainStore, { IGetStore } from '../../store/MainStore'
 import { action, observable } from 'mobx'
 import { Link } from 'react-router-dom'
-import { IRegisterProps } from './store/Auth.store'
 import { RouterProps } from 'react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { IRegisterProps } from './store/Auth.interface'
 
 export interface IRegisterClientProps extends RouterProps {}
 

@@ -1,5 +1,5 @@
 import { IChangeSettingsProps } from './../components/Mainchatpage/SettingsBar/store/Settings.store'
-import { IRegisterProps } from './../components/Auth/store/Auth.store'
+import { IRegisterProps } from './../components/Auth/store/Auth.interface'
 
 export interface IRegisterResponse {
     success: string

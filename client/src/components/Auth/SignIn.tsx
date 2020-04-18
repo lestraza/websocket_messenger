@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react'
 import { Link } from 'react-router-dom'
 import { IGetStore } from '../../store/MainStore'
 import { action, observable } from 'mobx'
-import { IRegisterProps } from './store/Auth.store'
+import { IRegisterProps } from './store/Auth.interface'
 
 export interface ISignInProps {}
 @inject('getStore')
