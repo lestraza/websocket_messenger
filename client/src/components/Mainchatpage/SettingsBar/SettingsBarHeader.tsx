@@ -35,7 +35,7 @@ export default class SettingsBarHeader extends React.Component<
                     >
                         <FontAwesomeIcon
                             icon={faArrowLeft}
-                            color={'#363636'}
+                            color={'#fff'}
                             size={'1x'}
                         />
                     </div>

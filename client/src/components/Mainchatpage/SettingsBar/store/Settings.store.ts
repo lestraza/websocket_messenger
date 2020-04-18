@@ -1,10 +1,12 @@
+import { AbstractStore } from './../../../../store/Abstract.store'
 import { AuthStore } from './../../../Auth/store/Auth.store'
 import {
     ISaveProfilePhotoResponse,
     updateClientSettings,
 } from './../../../../requests/index'
-import { observable, action, runInAction } from 'mobx'
+import { observable, action, runInAction, computed } from 'mobx'
 import { saveProfilePhotoReq } from '../../../../requests'
+import MainStore from '../../../../store/MainStore'
 
 export interface IChangeSettingsProps {
     name?: string
@@ -14,10 +16,17 @@ export interface IChangeSettingsProps {
     _id: string
 }
 
-export class SettingsStore {
-    constructor() {}
+export class SettingsStore extends AbstractStore {
+    constructor() {
+        super()
+    }
     @observable
     public isShowSettingsBar: boolean = false
+
+    @computed
+    private get authStore() {
+        return this.mainStore.getStore('authStore')
+    }
 
     @observable
     newSettings: IChangeSettingsProps = {
