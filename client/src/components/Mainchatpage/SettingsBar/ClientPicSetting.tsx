@@ -13,7 +13,6 @@ export default class ClientPicSetting extends React.Component<
     IClientPicSettingProps
 > {
     authStore = this.injected.getStore('authStore')
-    settingsStore = this.injected.getStore('settingsStore')
 
     private get injected() {
         return this.props as IClientPicSettingProps & IGetStore
@@ -30,8 +29,8 @@ export default class ClientPicSetting extends React.Component<
     OnChangeUploadPic(event: React.SyntheticEvent<HTMLInputElement>) {
         event.preventDefault()
         const target = event.currentTarget
-        const { changeProfilePhoto } = this.settingsStore
-        const { id } = this.authStore.client
+        const { changeProfilePhoto } = this.authStore
+        const { id = '' } = this.authStore.client
         changeProfilePhoto(target, id)
     }
     public render() {

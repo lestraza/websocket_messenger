@@ -1,4 +1,4 @@
-import { IRegisterProps, IClient, IChangeSettingsProps } from './Auth.interface'
+import { IUser } from './Auth.interface'
 import { AbstractStore } from './../../../store/Abstract.store'
 import {
     ISaveProfilePhotoResponse,
@@ -14,7 +14,7 @@ import {
 
 export class AuthStore extends AbstractStore {
     @observable
-    public clientRegisterProps: IRegisterProps = {
+    public clientRegisterProps: IUser = {
         name: '',
         lastname: '',
         email: '',
@@ -23,10 +23,10 @@ export class AuthStore extends AbstractStore {
     }
 
     @observable
-    public client: IClient = {
+    public client: IUser = {
         id: '',
         name: '',
-        lastName: '',
+        lastname: '',
         email: '',
         avatarUrl: '',
         isOnline: false,
@@ -51,12 +51,12 @@ export class AuthStore extends AbstractStore {
     public isAuthenticatedByToken: boolean = false
 
     @observable
-    newSettings: IChangeSettingsProps = {
+    newSettings: IUser = {
         name: '',
         lastname: '',
         email: '',
         password: '',
-        _id: '',
+        id: '',
     }
 
     @observable
@@ -73,11 +73,10 @@ export class AuthStore extends AbstractStore {
     }
 
     @action.bound
-    public saveInputValueRegisterForm(
-        prop: keyof IRegisterProps,
-        value: string
-    ) {
-        this.clientRegisterProps[prop] = value
+    public saveInputValueRegisterForm(prop: keyof IUser, value: string) {
+        if (prop) {
+            ;(this.clientRegisterProps[prop] as string) = value
+        }
     }
 
     @action.bound
@@ -150,7 +149,7 @@ export class AuthStore extends AbstractStore {
                         this.client = {
                             id: res.id,
                             name: res.name,
-                            lastName: res.lastname,
+                            lastname: res.lastname,
                             email: res.email,
                             avatarUrl: res.avatarUrl,
                             isOnline: res.isOnline,
@@ -172,7 +171,6 @@ export class AuthStore extends AbstractStore {
     public logout() {
         let cookieName: string = 'user_token='
         const token: any = this.getCookie(cookieName)
-        //cookieName = `${cookieName}${token}; Path=/`
         document.cookie = `${cookieName}; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`
         this.authClient()
     }
@@ -205,16 +203,13 @@ export class AuthStore extends AbstractStore {
     }
 
     @action.bound
-    public saveInputValueNewSettingsForm(
-        prop: keyof IChangeSettingsProps,
-        value: string
-    ) {
-        this.newSettings[prop] = value
+    public saveInputValueNewSettingsForm(prop: keyof IUser, value: string) {
+        ;(this.newSettings[prop] as string) = value
     }
 
     @action.bound
     public submutNewSettings() {
-        this.newSettings._id = this.client.id
+        this.newSettings.id = this.client.id
         updateClientSettings(this.newSettings)
             .then((res) => {
                 runInAction(() => {

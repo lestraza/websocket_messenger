@@ -14,6 +14,7 @@ export interface IDialogProps {}
 export default class Dialog extends Component<IDialogProps> {
     mainStore = this.injected.getStore('mainStore')
     dialogStore = this.injected.getStore('dialogStore')
+    authStore = this.injected.getStore('authStore')
 
     private get injected() {
         return this.props as IDialogProps & IGetStore
@@ -34,9 +35,10 @@ export default class Dialog extends Component<IDialogProps> {
     public render() {
         const { newMessage } = this.mainStore
         const { isShowAddContactModal } = this.dialogStore
+        const { name, lastname } = this.authStore.client
         return (
             <div className="dialog">
-                <div className="dialog__header"></div>
+                <div className="dialog__header">{`${name} ${lastname}`}</div>
                 <div className="dialog__screen">
                     <MessageScreenContainer />
                 </div>

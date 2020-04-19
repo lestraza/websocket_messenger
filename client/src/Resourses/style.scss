@@ -405,15 +405,14 @@ input[type='password'] {
         width: 600px;
         height: 500px;
         position: absolute;
-        z-index: 7;
         top: 174px;
-        right: 448px;
+        right: 300px;
         background-color: #e5bcbc;
     }
     &__form {
         margin: 0 auto;
     }
-    .auth-container {
-        margin: 40px auto;
-    }
+}
+.auth-container {
+    margin: 40px auto;
 }

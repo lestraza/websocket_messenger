@@ -31,13 +31,22 @@ export default class AddContact extends React.Component<IAddContactProps> {
     public onClickAddContact() {
         const { addContact } = this.dialogStore
         const { id } = this.authStore.client
-        addContact(id)
+        addContact()
     }
     public render() {
-        const { email, contactId, name, lastname } = this.dialogStore.newContact
-        const contactname = name.charAt(0).toUpperCase() + name.slice(1)
-        const contactLastname =
-            lastname.charAt(0).toUpperCase() + lastname.slice(1)
+        const { email, name, lastname, id } = this.dialogStore.newContact
+        const { addContactServerError } = this.dialogStore
+        // const contactname = () => {
+        //     if(name) {
+        //         name.charAt(0).toUpperCase() + name.slice(1)
+        //     }
+        // }
+        // const contactLastname = () => {
+        //     if(lastname) {
+        //         lastname.charAt(0).toUpperCase() + lastname.slice(1)
+        //     }
+        // }
+
         return (
             <div className="add-contact__container">
                 <form className="add-contact__form" onSubmit={this.formSubmit}>
@@ -51,13 +60,14 @@ export default class AddContact extends React.Component<IAddContactProps> {
                         value={email}
                     />
                 </form>
-                {contactId && (
+                {id && (
                     <div>
-                        <div>{`Add to contacts ${contactname} ${contactLastname}?`}</div>
+                        <div>{`Add to contacts ${name} ${lastname}?`}</div>
                         <div onClick={this.onClickAddContact}>Yes</div>
                         <div>No</div>
                     </div>
                 )}
+                {addContactServerError && <div>{addContactServerError}</div>}
             </div>
         )
     }

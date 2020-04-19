@@ -1,6 +1,6 @@
-import { IContactProps } from './../components/Mainchatpage/Dialog/store/Dialog.store'
+import { IContactProps } from './../components/Mainchatpage/Dialog/store/Dialog.interface'
+import { IUser } from './../components/Auth/store/Auth.interface'
 import { IChangeSettingsProps } from './../components/Mainchatpage/SettingsBar/store/Settings.store'
-import { IRegisterProps } from './../components/Auth/store/Auth.interface'
 
 export interface IRegisterResponse {
     success: string
@@ -25,7 +25,7 @@ export interface ISaveProfilePhotoResponse {
     _id: string
 }
 
-export function registerClient(clientData: IRegisterProps) {
+export function registerClient(clientData: IUser) {
     return new Promise<IRegisterResponse>((resolve, reject) => {
         return fetch('/api/users/register', {
             method: 'POST',
@@ -45,7 +45,7 @@ export function registerClient(clientData: IRegisterProps) {
     })
 }
 
-export function loginClientReq(clientData: IRegisterProps) {
+export function loginClientReq(clientData: IUser) {
     return new Promise<ILoginResponse>((resolve, reject) => {
         return fetch('/api/users/login', {
             method: 'POST',
@@ -160,7 +160,6 @@ export function findContactReq(email: string) {
             },
         }).then((res) => {
             res.json().then((parsedRes) => {
-                console.log(parsedRes)
                 if (res.status === 200) {
                     resolve(parsedRes)
                 } else {
