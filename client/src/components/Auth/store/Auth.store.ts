@@ -189,7 +189,8 @@ export class AuthStore extends AbstractStore {
             currentDialog.push(dialogMessage)
         })
         this.socket.on('inviteToChat', (id: string) => {
-            console.log(id)
+            const { sendNotification } = this.dialogStore
+            sendNotification(id)
         })
     }
 
@@ -214,17 +215,14 @@ export class AuthStore extends AbstractStore {
     public changeProfilePhoto(target: any, id: string) {
         const blob = new Blob([target.files[0]], { type: 'application/json' })
         const fileReader = new FileReader()
-        console.log(blob)
         fileReader.addEventListener('load', (target) => {
             console.log(fileReader.result)
         })
         const avatarUrl = fileReader.readAsArrayBuffer(blob)
-        console.log(avatarUrl)
         const args: ISaveProfilePhotoResponse = {
             avatarUrl: avatarUrl,
             _id: id,
         }
-        console.log(args)
         saveProfilePhotoReq(args)
     }
 

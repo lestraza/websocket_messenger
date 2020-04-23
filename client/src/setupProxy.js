@@ -8,3 +8,5 @@ module.exports = function (app) {
         })
     )
 }
+
+// 'https://mayo-server.herokuapp.com/'

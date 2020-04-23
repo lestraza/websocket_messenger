@@ -355,6 +355,12 @@ input[type='password'] {
         background-color: darken($color: #9cc9e4, $amount: 5);
     }
 }
+.send-notification {
+    background-color: #ecb486;
+    &:hover {
+        background-color: darken($color: #ecb486, $amount: 5);
+    }
+}
 
 .message-screen-container {
     min-height: 20px;

@@ -135,6 +135,7 @@ export interface IContactResponse {
     lastname: string
     email: string
     avatarUrl: string
+    hasNewMessage?: boolean
 }
 
 export function getContactById(contactId: string) {

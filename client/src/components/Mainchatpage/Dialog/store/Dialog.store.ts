@@ -88,6 +88,8 @@ export class DialogStore extends AbstractStore {
                 runInAction(() => {
                     this.contacts = [...this.contacts, contact]
                     this.isShowAddContactModal = false
+                    this.newContact = initContact
+                    this.isContactReceived = false
                 })
             })
             .catch((err) => {
@@ -168,20 +170,37 @@ export class DialogStore extends AbstractStore {
 
     @action.bound
     public getContactHistory(contactId: string) {
+        const { socket } = this.authStore
         const selectedContact = this.authStore.client.contacts?.find(
             (contact) => contact.contactId === contactId
         )
-
+        if (this.currentDialogId) {
+            socket?.emit('leaveChat', this.currentDialogId)
+            this.currentDialog = []
+        }
         if (selectedContact) {
             const { dialogId } = selectedContact
             this.currentDialogId = dialogId
             findDialogById(dialogId).then((dialog) => {
                 runInAction(() => {
-                    const { socket } = this.authStore
                     socket?.emit('joinChat', dialogId)
                     this.currentDialog = dialog.messages
+                    this.contacts.forEach((contact) => {
+                        if (contact.id === contactId) {
+                            contact.hasNewMessage = false
+                        }
+                    })
                 })
             })
         }
+    }
+
+    @action.bound
+    sendNotification(id: string) {
+        this.contacts.forEach((contact) => {
+            if (contact.id === id) {
+                contact.hasNewMessage = true
+            }
+        })
     }
 }

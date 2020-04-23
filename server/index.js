@@ -184,6 +184,9 @@ io.sockets.on("connection", (socket) => {
   socket.on("joinChat", (dialogId) => {
     socket.join(dialogId);
   });
+  socket.on("leaveChat", (dialogId) => {
+    socket.leave(dialogId);
+  });
 
   socket.on("sendMessage", (dialogMessage) => {
     let socketsInRoom = 0;
@@ -197,13 +200,15 @@ io.sockets.on("connection", (socket) => {
       const filteredSocket = connections.find(
         (socket) => socket.handshake.query.id === dialogMessage.contactId
       );
-
-      socket.broadcast
-        .to(filteredSocket.id)
-        .emit("inviteToChat", dialogMessage.id);
+      if (filteredSocket) {
+        socket.broadcast
+          .to(filteredSocket.id)
+          .emit("inviteToChat", dialogMessage.id);
+      }
     }
     saveMessageToHistory(dialogMessage);
     // const rooms = connections.map( socket => socket.rooms)
+    // console.log(rooms);
     socket.broadcast
       .to(dialogMessage.dialogId)
       .emit("receiveMessage", dialogMessage);

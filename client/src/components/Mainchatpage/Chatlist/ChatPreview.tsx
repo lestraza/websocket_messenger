@@ -31,14 +31,14 @@ export default class ChatPreview extends React.Component<IChatPreviewProps> {
     }
 
     public render() {
-        const { name, lastname, id } = this.props.contact
+        const { name, lastname, id, hasNewMessage } = this.props.contact
         return (
             <div
                 className={`chat-preview ${
                     this.dialogStore.currentContact.id === id
                         ? 'selected-contact'
                         : ''
-                }`}
+                } ${hasNewMessage ? 'send-notification' : ''}`}
                 onClick={this.onClickGetHistory}
             >
                 <div
