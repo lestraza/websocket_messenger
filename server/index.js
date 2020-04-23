@@ -9,7 +9,10 @@ const server = require("http").Server(app);
 const io = require("socket.io")(server);
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.DATABASE);
+mongoose.connect(process.env.DATABASE, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -83,7 +86,7 @@ app.post("/api/users/auth", auth, (req, res) => {
     avatarUrl: res.avatarUrl,
     name: req.user.name,
     lastname: req.user.lastname,
-    dialogs: req.user.dialogs,
+    contacts: req.user.contacts,
   });
 });
 
@@ -102,6 +105,43 @@ app.post("/api/users/addAvatar", (req, res) => {
       return res.status(403).json({
         success: false,
         message: "Cannot find user.",
+      });
+    }
+  });
+});
+
+app.get("/api/users/getContactById", (req, res) => {
+  const { contactId } = req.query;
+
+  User.findOne({ _id: contactId }, (err, user) => {
+    if (user) {
+      const { name, lastname, avatarUrl, email, _id } = user;
+      res.status(200).json({
+        id: _id,
+        name,
+        lastname,
+        email,
+        avatarUrl,
+      });
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Cannot find user.",
+      });
+    }
+  });
+});
+
+app.get("/api/users/getDialogById", (req, res) => {
+  const { dialogId } = req.query;
+
+  Dialog.findOne({ _id: dialogId }, (err, dialog) => {
+    if (dialog) {
+      res.status(200).json(dialog);
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Cannot find dialog.",
       });
     }
   });
@@ -131,8 +171,55 @@ app.post("/api/users/updateClient", (req, res) => {
 });
 
 //=====================================
-//              DIALOG
+//              SOCKET
 //=====================================
+connections = [];
+
+io.sockets.on("connection", (socket) => {
+  connections.push(socket);
+  socket.on("disconnect", () => {
+    connections.splice(connections.indexOf(socket), 1);
+  });
+
+  socket.on("joinChat", (dialogId) => {
+    socket.join(dialogId);
+  });
+
+  socket.on("sendMessage", (dialogMessage) => {
+    let socketsInRoom = 0;
+    for (key in socket.rooms) {
+      if (key) {
+        socketsInRoom++;
+      }
+    }
+    console.log(socketsInRoom);
+    if (socketsInRoom < 3) {
+      const filteredSocket = connections.find(
+        (socket) => socket.handshake.query.id === dialogMessage.contactId
+      );
+
+      socket.broadcast
+        .to(filteredSocket.id)
+        .emit("inviteToChat", dialogMessage.id);
+    }
+    saveMessageToHistory(dialogMessage);
+    // const rooms = connections.map( socket => socket.rooms)
+    socket.broadcast
+      .to(dialogMessage.dialogId)
+      .emit("receiveMessage", dialogMessage);
+  });
+});
+
+const saveMessageToHistory = (dialogMessage) => {
+  Dialog.findOne({
+    _id: dialogMessage.dialogId,
+  }).exec((err, dialog) => {
+    if (dialog) {
+      dialog.messages.push(dialogMessage);
+      dialog.save((err, doc) => {});
+    }
+  });
+};
 app.post("/api/users/findContact", (req, res) => {
   // find email
   const { email } = req.body;
@@ -147,6 +234,7 @@ app.post("/api/users/findContact", (req, res) => {
         id: user._id,
         avatarUrl: user.avatarUrl,
         name: user.name,
+        email: user.email,
         lastname: user.lastname,
       });
     }
@@ -155,7 +243,6 @@ app.post("/api/users/findContact", (req, res) => {
 
 app.post("/api/users/addContact", (req, res) => {
   const { clientId, contactId } = req.body;
-  console.log(clientId, contactId);
   User.find({
     _id: {
       $in: [
@@ -166,9 +253,11 @@ app.post("/api/users/addContact", (req, res) => {
   }).exec((err, docs) => {
     const user = docs.find((doc) => doc.id === clientId);
     const contact = docs.find((doc) => doc.id === contactId);
-    console.log(user, contact);
     if (user && contact) {
-      if (!user.contacts.includes(contactId)) {
+      const isAlreadyContact = user.contacts.some(
+        (contact) => contact.contactId === contactId
+      );
+      if (!isAlreadyContact) {
         const dialog = new Dialog({
           messages: [],
         });
@@ -184,16 +273,13 @@ app.post("/api/users/addContact", (req, res) => {
         //user.dialogs.push(dialog.id)
         // contact.dialogs.push(dialog.id)
         dialog.save((err, dialogdoc) => {
-          if (err) return res.json({ success: false, err });
+          if (err) return res.json(err);
 
           user.save((err, userdoc) => {
             if (!err) {
-              contact.save((err, contactdoc) => {
+              contact.save((err, contact) => {
                 if (!err) {
-                  res.status(200).json({
-                    success: true,
-                    contacts: contactdoc,
-                  });
+                  res.status(200).json(contact);
                 } else {
                   res.status(401).json({
                     error: err,
@@ -206,6 +292,10 @@ app.post("/api/users/addContact", (req, res) => {
               });
             }
           });
+        });
+      } else {
+        res.status(401).json({
+          error: "Contact already added",
         });
       }
     }

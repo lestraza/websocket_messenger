@@ -5,6 +5,7 @@ import SettingsBar from '../SettingsBar/SettinsBar'
 import ChatListHeader from './ChatListHeader'
 import { action } from 'mobx'
 import ChatPreview from './ChatPreview'
+import { IContactResponse } from '../../../requests'
 
 export interface IChatListProps {}
 
@@ -20,18 +21,20 @@ export default class ChatList extends React.Component<IChatListProps> {
     }
 
     @action.bound
-    public renderChatListPreview() {
-        const { contacts } = this.dialogStore
-        contacts.map((contact) => {
-            return //<ChatPreview />
+    public renderChatListPreview(contacts: IContactResponse[]) {
+        return contacts.map((contact) => {
+            return <ChatPreview contact={contact} />
         })
     }
 
     public render() {
         const { isShowSettingsBar } = this.authStore
+        const { contacts } = this.dialogStore
+
         return (
             <div className="chat-list">
                 {isShowSettingsBar ? <SettingsBar /> : <ChatListHeader />}
+                {this.renderChatListPreview(contacts)}
             </div>
         )
     }

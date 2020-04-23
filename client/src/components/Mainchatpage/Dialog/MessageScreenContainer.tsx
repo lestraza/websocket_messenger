@@ -12,6 +12,7 @@ export default class MessageScreenContainer extends React.Component<
     IMessageScreenContainerProps
 > {
     mainStore = this.injected.getStore('mainStore')
+    dialogStore = this.injected.getStore('dialogStore')
 
     private get injected() {
         return this.props as IMessageScreenContainerProps & IGetStore
@@ -19,12 +20,12 @@ export default class MessageScreenContainer extends React.Component<
 
     @action.bound
     renderScreenContainers() {
-        return this.mainStore.currentDialog.map((message) => {
+        return this.dialogStore.currentDialog.map((message) => {
             return <Message message={message} />
         })
     }
     public render() {
-        const { currentDialog } = this.mainStore
+        const { currentDialog } = this.dialogStore
         return <>{currentDialog.length > 0 && this.renderScreenContainers()}</>
     }
 }

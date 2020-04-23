@@ -1,18 +1,31 @@
-import { IContactProps } from './Dialog.interface'
+import { IContactResponse, findDialogById } from './../../../../requests/index'
+import { IMessage } from './Dialog.interface'
 import { IUser } from './../../../Auth/store/Auth.interface'
 import { AbstractStore } from './../../../../store/Abstract.store'
 import { AuthStore } from './../../../Auth/store/Auth.store'
 import { action, observable, runInAction, computed } from 'mobx'
-import { addContactReq, findContactReq } from '../../../../requests'
+import {
+    addContactReq,
+    findContactReq,
+    getContactById,
+} from '../../../../requests'
+
+const initContact = {
+    email: '',
+    id: '',
+    name: '',
+    lastname: '',
+}
 
 export class DialogStore extends AbstractStore {
     @observable
-    newContact: IUser = {
-        email: '',
-        id: '',
-        name: '',
-        lastname: '',
-    }
+    public newContact: IUser = { ...initContact }
+
+    @observable
+    public isContactReceived: boolean = false
+
+    @observable
+    public contacts: IContactResponse[] = []
 
     @observable
     isShowAddContactModal: boolean = false
@@ -21,11 +34,47 @@ export class DialogStore extends AbstractStore {
     addContactServerError: string = ''
 
     @observable
-    contacts: IContactProps[] = []
+    public currentDialog: IMessage[] = []
+
+    @observable
+    public currentDialogId: string = ''
+
+    @observable
+    public currentContact: IUser = {}
+
+    @observable
+    public newMessage: string = ''
+
+    @observable
+    public isAlreadyInContacts: boolean = false
 
     @computed
     private get authStore() {
         return this.mainStore.getStore('authStore') as AuthStore
+    }
+
+    @action.bound
+    public showOrCloseAddContactModal() {
+        if (this.isShowAddContactModal) {
+            this.isShowAddContactModal = false
+            this.newContact = { ...initContact }
+            this.addContactServerError = ''
+        } else {
+            this.isShowAddContactModal = true
+        }
+    }
+
+    @action.bound
+    public searchNewContactEmail(email: string) {
+        this.isAlreadyInContacts = this.contacts.some(
+            (contact) => contact.email === email.trim()
+        )
+        this.newContact.email = email.trim()
+        if (this.isAlreadyInContacts) {
+            this.addContactServerError = 'Contact already added'
+        } else {
+            this.addContactServerError = ''
+        }
     }
 
     @action.bound
@@ -34,41 +83,105 @@ export class DialogStore extends AbstractStore {
             clientId: this.authStore.client.id || '',
             contactId: this.newContact.id || '',
         }
-        addContactReq(data).then((res) => {
-            runInAction(() => {
-                this.contacts = res.contacts
-                this.isShowAddContactModal = false
-                console.log(this.contacts)
+        addContactReq(data)
+            .then((contact) => {
+                runInAction(() => {
+                    this.contacts = [...this.contacts, contact]
+                    this.isShowAddContactModal = false
+                })
             })
-        })
+            .catch((err) => {
+                this.isContactReceived = false
+                this.addContactServerError = err.error
+            })
     }
 
     @action.bound
     public findContactByEmail() {
-        findContactReq(this.newContact.email || '')
-            .then((res) => {
-                runInAction(() => {
-                    this.newContact.id = res.id
-                    this.newContact.name = res.name
-                    this.newContact.lastname = res.lastname
-                    this.isShowAddContactModal = true
+        if (this.isAlreadyInContacts) {
+            return
+        } else {
+            findContactReq(this.newContact.email || '')
+                .then((res) => {
+                    runInAction(() => {
+                        this.newContact.id = res.id
+                        this.newContact.name = res.name
+                        this.newContact.lastname = res.lastname
+                        this.isShowAddContactModal = true
+
+                        this.isContactReceived = true
+                    })
                 })
-            })
-            .catch((err) => {
-                this.addContactServerError = err.message
-            })
+                .catch((err) => {
+                    this.addContactServerError = err.message
+                })
+        }
     }
 
     @action.bound
-    public showOrCloseAddContactModal() {
-        if (this.isShowAddContactModal) {
-            this.isShowAddContactModal = false
-        } else {
-            this.isShowAddContactModal = true
+    public getContactsById() {
+        const { contacts } = this.authStore.client
+
+        if (contacts) {
+            return Promise.all(
+                contacts.map((contact) => {
+                    return getContactById(contact.contactId)
+                })
+            ).then((contacts) => {
+                runInAction(() => {
+                    this.contacts = contacts
+                    this.newContact = { ...initContact }
+                })
+            })
         }
     }
+
     @action.bound
-    public savePropsNewContact(email: string) {
-        this.newContact.email = email.trim()
+    public sendMessage() {
+        const { id, name, lastname } = this.authStore.client
+        const authStore = this.mainStore.getStore('authStore') as AuthStore
+
+        const { socket } = authStore
+
+        if (id && name && lastname && this.currentContact.id) {
+            const dialogMessage: IMessage = {
+                contactId: this.currentContact.id,
+                id,
+                name,
+                lastname,
+                text: this.newMessage,
+                timeStamp: new Date().toISOString(),
+                dialogId: this.currentDialogId,
+            }
+            if (dialogMessage && socket) {
+                this.currentDialog = [...this.currentDialog, dialogMessage]
+                socket.emit('sendMessage', dialogMessage)
+            }
+            this.newMessage = ''
+        }
+    }
+
+    @action.bound
+    public saveNewMessage(message: string) {
+        this.newMessage = message
+    }
+
+    @action.bound
+    public getContactHistory(contactId: string) {
+        const selectedContact = this.authStore.client.contacts?.find(
+            (contact) => contact.contactId === contactId
+        )
+
+        if (selectedContact) {
+            const { dialogId } = selectedContact
+            this.currentDialogId = dialogId
+            findDialogById(dialogId).then((dialog) => {
+                runInAction(() => {
+                    const { socket } = this.authStore
+                    socket?.emit('joinChat', dialogId)
+                    this.currentDialog = dialog.messages
+                })
+            })
+        }
     }
 }

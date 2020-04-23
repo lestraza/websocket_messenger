@@ -21,11 +21,11 @@ export default class ChatListHeader extends React.Component<
         return this.props as ChatListHeader & IGetStore
     }
 
-    @action.bound
-    public renderChatPreviews() {
-        const { users } = this.mainStore
-        return users.map((user, i) => <ChatPreview user={user} />)
-    }
+    // @action.bound
+    // public renderChatPreviews() {
+    //     const { users } = this.mainStore
+    //     return users.map((user, i) => <ChatPreview user={user} />)
+    // }
 
     @action.bound
     public onClickShowSettingsBar() {
@@ -65,7 +65,7 @@ export default class ChatListHeader extends React.Component<
                     </div>
                     <Logout />
                 </div>
-                {this.renderChatPreviews()}
+                {/* {this.renderChatPreviews()} */}
             </>
         )
     }

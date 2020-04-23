@@ -16,9 +16,9 @@ export default class AddContact extends React.Component<IAddContactProps> {
     }
     @action.bound
     public onChangeSaveValue(e: React.ChangeEvent<HTMLInputElement>) {
-        const { savePropsNewContact } = this.dialogStore
+        const { searchNewContactEmail } = this.dialogStore
         const value = e.currentTarget.value
-        savePropsNewContact(value)
+        searchNewContactEmail(value)
     }
     @action.bound
     public formSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -33,9 +33,15 @@ export default class AddContact extends React.Component<IAddContactProps> {
         const { id } = this.authStore.client
         addContact()
     }
+
+    @action.bound
+    public onClickCloseModal() {
+        const { showOrCloseAddContactModal } = this.dialogStore
+        showOrCloseAddContactModal()
+    }
     public render() {
         const { email, name, lastname, id } = this.dialogStore.newContact
-        const { addContactServerError } = this.dialogStore
+        const { addContactServerError, isContactReceived } = this.dialogStore
         // const contactname = () => {
         //     if(name) {
         //         name.charAt(0).toUpperCase() + name.slice(1)
@@ -49,6 +55,12 @@ export default class AddContact extends React.Component<IAddContactProps> {
 
         return (
             <div className="add-contact__container">
+                <div
+                    className="add-contact__close-modal"
+                    onClick={this.onClickCloseModal}
+                >
+                    x
+                </div>
                 <form className="add-contact__form" onSubmit={this.formSubmit}>
                     <FormInput
                         type={'email'}
@@ -60,11 +72,11 @@ export default class AddContact extends React.Component<IAddContactProps> {
                         value={email}
                     />
                 </form>
-                {id && (
+                {isContactReceived && (
                     <div>
                         <div>{`Add to contacts ${name} ${lastname}?`}</div>
                         <div onClick={this.onClickAddContact}>Yes</div>
-                        <div>No</div>
+                        <div onClick={this.onClickCloseModal}>No</div>
                     </div>
                 )}
                 {addContactServerError && <div>{addContactServerError}</div>}

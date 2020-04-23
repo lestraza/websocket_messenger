@@ -1,3 +1,5 @@
+import { IMessage } from './../../Mainchatpage/Dialog/store/Dialog.interface'
+import { DialogStore } from './../../Mainchatpage/Dialog/store/Dialog.store'
 import { IUser } from './Auth.interface'
 import { AbstractStore } from './../../../store/Abstract.store'
 import {
@@ -11,8 +13,12 @@ import {
     authClientReq,
     updateClientSettings,
 } from '../../../requests'
+import io from 'socket.io-client'
 
 export class AuthStore extends AbstractStore {
+    @observable
+    public socket?: SocketIOClient.Socket
+
     @observable
     public clientRegisterProps: IUser = {
         name: '',
@@ -29,6 +35,7 @@ export class AuthStore extends AbstractStore {
         lastname: '',
         email: '',
         avatarUrl: '',
+        contacts: [],
         isOnline: false,
     }
 
@@ -62,9 +69,8 @@ export class AuthStore extends AbstractStore {
     @observable
     public isShowSettingsBar: boolean = false
 
-    @computed
-    private get settingsStore() {
-        return this.mainStore.getStore('settingsStore')
+    private get dialogStore() {
+        return this.mainStore.getStore('dialogStore') as DialogStore
     }
 
     constructor() {
@@ -140,30 +146,50 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public authClient() {
-        return new Promise((resolve, reject) => {
-            const cookieName: string = 'user_token='
-            const token: any = this.getCookie(cookieName)
-            authClientReq(token)
-                .then((res) => {
-                    runInAction(() => {
-                        this.client = {
-                            id: res.id,
-                            name: res.name,
-                            lastname: res.lastname,
-                            email: res.email,
-                            avatarUrl: res.avatarUrl,
-                            isOnline: res.isOnline,
-                        }
-                        this.isAuthenticated = true
-                        resolve()
-                    })
+        const cookieName: string = 'user_token='
+        const token: any = this.getCookie(cookieName)
+        return authClientReq(token)
+            .then((res) => {
+                runInAction(() => {
+                    this.client = {
+                        id: res.id,
+                        name: res.name,
+                        lastname: res.lastname,
+                        email: res.email,
+                        avatarUrl: res.avatarUrl,
+                        contacts: res.contacts,
+                        isOnline: res.isOnline,
+                    }
+                    this.isAuthenticated = true
+                    this.dialogStore.getContactsById()
+                    this.connectSocket()
                 })
-                .catch((err) => {
-                    runInAction(() => {
-                        this.isAuthenticated = false
-                        reject()
-                    })
+            })
+            .catch((err) => {
+                runInAction(() => {
+                    this.isAuthenticated = false
+                    this.socket?.emit('disconnect')
                 })
+            })
+    }
+
+    @action.bound
+    private connectSocket() {
+        this.socket = io('http://localhost:3006/', {
+            query: {
+                id: this.client.id,
+            },
+        })
+
+        this.socket.on('connect', () => {
+            console.log('connected')
+        })
+        this.socket.on('receiveMessage', (dialogMessage: IMessage) => {
+            const { currentDialog } = this.dialogStore
+            currentDialog.push(dialogMessage)
+        })
+        this.socket.on('inviteToChat', (id: string) => {
+            console.log(id)
         })
     }
 

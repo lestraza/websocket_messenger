@@ -94,6 +94,7 @@ input[type='password'] {
     justify-content: center;
     align-items: center;
     flex-grow: 1;
+    height: calc(100vh - 760px);
 }
 
 .app-container {
@@ -252,6 +253,7 @@ input[type='password'] {
 
     &__screen {
         height: 85%;
+        overflow: auto;
     }
 
     &__type-message {
@@ -346,6 +348,13 @@ input[type='password'] {
         border-radius: 50%;
     }
 }
+.selected-contact {
+    background-color: #9cc9e4;
+
+    &:hover {
+        background-color: darken($color: #9cc9e4, $amount: 5);
+    }
+}
 
 .message-screen-container {
     min-height: 20px;
@@ -410,7 +419,7 @@ input[type='password'] {
         background-color: #e5bcbc;
     }
     &__form {
-        margin: 0 auto;
+        margin: 30px auto;
     }
 }
 .auth-container {

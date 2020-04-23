@@ -23,17 +23,17 @@ export default class Dialog extends Component<IDialogProps> {
     @action.bound
     formSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
-        this.mainStore.sendMessage()
+        this.dialogStore.sendMessage()
     }
 
     @action.bound
     onChangeSaveValue(e: React.FormEvent<HTMLInputElement>) {
-        const { saveNewMessage } = this.mainStore
+        const { saveNewMessage } = this.dialogStore
         const value = e.currentTarget.value
         saveNewMessage(value)
     }
     public render() {
-        const { newMessage } = this.mainStore
+        const { newMessage } = this.dialogStore
         const { isShowAddContactModal } = this.dialogStore
         const { name, lastname } = this.authStore.client
         return (
