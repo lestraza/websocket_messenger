@@ -6,6 +6,7 @@ import SignIn from './components/Auth/SignIn'
 import { inject, observer } from 'mobx-react'
 import MainChatPage from './components/Mainchatpage/MainChatPage'
 import RegisterClient from './components/Auth/RegisterClient'
+import { LoaderSpinner } from './components/common/LoaderSpinner'
 
 export interface IAppProps {}
 @inject('getStore')
@@ -19,36 +20,40 @@ export default class App extends React.Component<IAppProps> {
     }
 
     render() {
-        const { isAuthenticated } = this.authStore
+        const { isAuthenticated, isAuthorizing } = this.authStore
         return (
             <div className="wrapper">
                 <div className="header"></div>
                 <div className="main">
                     <div className="app-container">
-                        <BrowserRouter>
-                            <Switch>
-                                <Route path={'/'} exact>
-                                    {!isAuthenticated ? (
-                                        <Redirect to={'/signin'} />
-                                    ) : (
-                                        <MainChatPage />
-                                    )}
-                                </Route>
-                                <Route
-                                    path={'/register'}
-                                    exact
-                                    component={RegisterClient}
-                                />
-                                <Route path={'/signin'} exact>
-                                    {' '}
-                                    {isAuthenticated ? (
-                                        <Redirect to={'/'} />
-                                    ) : (
-                                        <SignIn />
-                                    )}{' '}
-                                </Route>
-                            </Switch>
-                        </BrowserRouter>
+                        {!isAuthorizing ? (
+                            <BrowserRouter>
+                                <Switch>
+                                    <Route path={'/'} exact>
+                                        {!isAuthenticated ? (
+                                            <Redirect to={'/signin'} />
+                                        ) : (
+                                            <MainChatPage />
+                                        )}
+                                    </Route>
+                                    <Route
+                                        path={'/register'}
+                                        exact
+                                        component={RegisterClient}
+                                    />
+                                    <Route path={'/signin'} exact>
+                                        {' '}
+                                        {isAuthenticated ? (
+                                            <Redirect to={'/'} />
+                                        ) : (
+                                            <SignIn />
+                                        )}{' '}
+                                    </Route>
+                                </Switch>
+                            </BrowserRouter>
+                        ) : (
+                            <LoaderSpinner />
+                        )}
                     </div>
                 </div>
             </div>

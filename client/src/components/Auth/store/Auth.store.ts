@@ -17,6 +17,9 @@ import io from 'socket.io-client'
 
 export class AuthStore extends AbstractStore {
     @observable
+    public isAuthorizing: boolean = false
+
+    @observable
     public socket?: SocketIOClient.Socket
 
     @observable
@@ -75,7 +78,13 @@ export class AuthStore extends AbstractStore {
 
     constructor() {
         super()
-        this.authClient()
+
+        this.isAuthorizing = true
+        this.authClient().finally(() => {
+            runInAction(() => {
+                this.isAuthorizing = false
+            })
+        })
     }
 
     @action.bound

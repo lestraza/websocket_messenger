@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { RouterProps } from 'react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
-import { IRegisterProps } from './store/Auth.interface'
+import { IUser } from './store/Auth.interface'
 
 export interface IRegisterClientProps extends RouterProps {}
 
@@ -34,7 +34,7 @@ export default class RegisterClient extends React.Component<
         const value = e.currentTarget.value
         const prop = e.currentTarget.dataset.id
         if (prop) {
-            saveInputValueRegisterForm(prop as keyof IRegisterProps, value)
+            saveInputValueRegisterForm(prop as keyof IUser, value)
         }
     }
 

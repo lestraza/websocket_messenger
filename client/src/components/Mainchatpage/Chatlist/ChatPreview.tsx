@@ -3,6 +3,9 @@ import { inject, observer } from 'mobx-react'
 import { IGetStore } from '../../../store/Abstract.store'
 import { IContactResponse } from '../../../requests'
 import { action } from 'mobx'
+import defaultUserPic from '../../../assets/default-user.png'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
 
 export interface IChatPreviewProps {
     contact: IContactResponse
@@ -19,8 +22,9 @@ export default class ChatPreview extends React.Component<IChatPreviewProps> {
     }
 
     private get backgroundImage() {
+        const { avatarUrl } = this.props.contact
         return {
-            backgroundImage: `url(${this.props.contact.avatarUrl})`,
+            backgroundImage: `url(${avatarUrl ? avatarUrl : defaultUserPic})`,
         }
     }
     @action.bound
@@ -32,13 +36,13 @@ export default class ChatPreview extends React.Component<IChatPreviewProps> {
 
     public render() {
         const { name, lastname, id, hasNewMessage } = this.props.contact
+        const hasNotification = this.dialogStore.currentContact.id === id
+
         return (
             <div
                 className={`chat-preview ${
-                    this.dialogStore.currentContact.id === id
-                        ? 'selected-contact'
-                        : ''
-                } ${hasNewMessage ? 'send-notification' : ''}`}
+                    hasNewMessage ? 'send-notification' : ''
+                }`}
                 onClick={this.onClickGetHistory}
             >
                 <div
@@ -48,6 +52,11 @@ export default class ChatPreview extends React.Component<IChatPreviewProps> {
                 <div className="chat-preview__user">
                     {`${name} ${lastname}`}
                 </div>
+                {hasNotification && (
+                    <div className="chat-preview__notification">
+                        <FontAwesomeIcon icon={faEnvelope} />
+                    </div>
+                )}
             </div>
         )
     }

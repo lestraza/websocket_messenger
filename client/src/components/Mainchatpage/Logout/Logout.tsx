@@ -2,6 +2,8 @@ import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { action } from 'mobx'
 import MainStore, { IGetStore } from '../../../store/MainStore'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 
 export interface ILogoutProps {}
 
@@ -21,7 +23,13 @@ export default class Logout extends React.Component<ILogoutProps> {
     public render() {
         return (
             <div className="logout-container">
-                <div onClick={this.onClickLogout}>Logout</div>
+                <div onClick={this.onClickLogout}>
+                    <FontAwesomeIcon
+                        icon={faSignOutAlt}
+                        color={'#bababa'}
+                        size={'lg'}
+                    />
+                </div>
             </div>
         )
     }
