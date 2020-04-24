@@ -46,22 +46,14 @@ export default class ChatListHeader extends React.Component<
                         className="chat-list__header-settings-button"
                         onClick={this.onClickShowSettingsBar}
                     >
-                        <FontAwesomeIcon
-                            icon={faBars}
-                            color={'#bababa'}
-                            size={'lg'}
-                        />
+                        <FontAwesomeIcon icon={faBars} size={'lg'} />
                     </div>
 
                     <div
                         className="chat-list__header-add-contact"
                         onClick={this.onClickShowAddContactModal}
                     >
-                        <FontAwesomeIcon
-                            icon={faPlus}
-                            color={'#bababa'}
-                            size={'lg'}
-                        />
+                        <FontAwesomeIcon icon={faPlus} size={'lg'} />
                     </div>
                     <Logout />
                 </div>

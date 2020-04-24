@@ -24,11 +24,7 @@ export default class Logout extends React.Component<ILogoutProps> {
         return (
             <div className="logout-container">
                 <div onClick={this.onClickLogout}>
-                    <FontAwesomeIcon
-                        icon={faSignOutAlt}
-                        color={'#bababa'}
-                        size={'lg'}
-                    />
+                    <FontAwesomeIcon icon={faSignOutAlt} size={'lg'} />
                 </div>
             </div>
         )

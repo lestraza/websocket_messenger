@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react'
 import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { action } from 'mobx'
+import defaultUserPic from '../../../assets/default-user.png'
 
 export interface IClientPicSettingProps {}
 
@@ -19,9 +20,9 @@ export default class ClientPicSetting extends React.Component<
     }
 
     private get backgroundImage() {
-        const { client } = this.authStore
+        const { avatarUrl } = this.authStore.client
         return {
-            backgroundImage: `url(${client.avatarUrl})`,
+            backgroundImage: `url(${avatarUrl ? avatarUrl : defaultUserPic})`,
         }
     }
 

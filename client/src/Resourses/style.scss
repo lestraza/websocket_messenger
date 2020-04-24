@@ -34,8 +34,10 @@ input[type='password'] {
 }
 
 h1 {
-    font-size: 30px;
+    font-size: 24px;
+    font-weight: normal;
     margin: 0;
+    color: #4b5d6d;
 }
 
 .font-small {
@@ -151,6 +153,7 @@ h1 {
         justify-content: center;
         align-items: center;
         transition: all 0.3s ease;
+        color: #8a9aa2;
 
         &:hover {
             background: rgba(0, 0, 0, 0.08);
@@ -298,7 +301,7 @@ h1 {
 
         &:focus {
             outline: none;
-            border: 1px solid #96c1ab;
+            border: 1px solid $main-color-light-blue;
         }
 
         &::placeholder {
@@ -456,13 +459,14 @@ h1 {
     right: 0;
     left: 0;
     background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(5px);
 }
 
 .add-contact {
     &__header {
         display: flex;
         justify-content: space-between;
+        padding: 25px 30px;
+        background: #e4ebf1;
     }
 
     &__container {
@@ -474,21 +478,19 @@ h1 {
         top: 174px;
         right: 300px;
         box-shadow: 0 0 25px 3px rgba(0, 0, 0, 0.2);
-        border: 1px solid #d8d8d8;
         box-sizing: border-box;
-        padding: 25px;
 
         input[type='email'] {
             font-size: 17px;
         }
     }
     &__form {
-        margin: 30px auto;
+        padding: 30px;
     }
 
     &__close-modal {
         cursor: pointer;
-        color: gray;
+        color: #4b5d6d;
         float: right;
     }
 }
