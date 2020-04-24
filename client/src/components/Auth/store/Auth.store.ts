@@ -6,7 +6,7 @@ import {
     ISaveProfilePhotoResponse,
     saveProfilePhotoReq,
 } from './../../../requests/index'
-import { action, observable, runInAction, computed } from 'mobx'
+import { action, observable, runInAction, computed, reaction } from 'mobx'
 import {
     registerClient,
     loginClientReq,
@@ -61,13 +61,7 @@ export class AuthStore extends AbstractStore {
     public isAuthenticatedByToken: boolean = false
 
     @observable
-    newSettings: IUser = {
-        name: '',
-        lastname: '',
-        email: '',
-        password: '',
-        id: '',
-    }
+    newSettings: IUser = {}
 
     @observable
     public isShowSettingsBar: boolean = false
@@ -85,6 +79,13 @@ export class AuthStore extends AbstractStore {
                 this.isAuthorizing = false
             })
         })
+
+        reaction(
+            () => this.client,
+            () => {
+                this.newSettings = { ...this.client }
+            }
+        )
     }
 
     @action.bound

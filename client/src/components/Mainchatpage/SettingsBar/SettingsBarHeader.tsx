@@ -1,9 +1,10 @@
 import * as React from 'react'
 import MainStore, { IGetStore } from '../../../store/MainStore'
-import { action } from 'mobx'
+import { action, observable } from 'mobx'
 import { inject, observer } from 'mobx-react'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import DeleteAccountModal from './DeleteAccountModal'
 
 export interface ISettingsBarHeaderProps {}
 
@@ -25,6 +26,14 @@ export default class SettingsBarHeader extends React.Component<
         showOrCloseSettingsBar()
     }
 
+    @observable
+    isShowDeleteAccountModal: boolean = false
+
+    @action.bound
+    onClickDeleteAccountModal() {
+        this.isShowDeleteAccountModal = true
+    }
+
     public render() {
         return (
             <>
@@ -40,6 +49,10 @@ export default class SettingsBarHeader extends React.Component<
                         />
                     </div>
                     <div className="client-settings__header-title">Profile</div>
+                    <div onClick={this.onClickDeleteAccountModal}>
+                        Delete account
+                    </div>
+                    {this.isShowDeleteAccountModal && <DeleteAccountModal />}
                 </div>
             </>
         )

@@ -37,6 +37,7 @@ export default class SettingsClientData extends React.Component<
 
     public render() {
         const { name, lastname, email, password } = this.authStore.newSettings
+        console.log(this.authStore.client)
         return (
             <form
                 className="client-settings__data-change-form form"
@@ -49,7 +50,7 @@ export default class SettingsClientData extends React.Component<
                     <FormInput
                         type={'text'}
                         id={'name'}
-                        placeholder={'Add your new name'}
+                        placeholder={name}
                         required={false}
                         onChange={this.onChangeSaveValue}
                         className={'client-settings__data-change-prop'}
@@ -64,7 +65,7 @@ export default class SettingsClientData extends React.Component<
                     <FormInput
                         type={'text'}
                         id={'lastname'}
-                        placeholder={'Add your new lastname'}
+                        placeholder={lastname}
                         required={false}
                         onChange={this.onChangeSaveValue}
                         className={'client-settings__data-change-prop'}
@@ -79,7 +80,7 @@ export default class SettingsClientData extends React.Component<
                     <FormInput
                         type={'text'}
                         id={'email'}
-                        placeholder={'Add your new email'}
+                        //placeholder={'Add your new email'}
                         required={false}
                         onChange={this.onChangeSaveValue}
                         className={'client-settings__data-change-prop'}

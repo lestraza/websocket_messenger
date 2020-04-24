@@ -33,8 +33,14 @@ export default class ChatList extends React.Component<IChatListProps> {
 
         return (
             <div className="chat-list">
-                {isShowSettingsBar ? <SettingsBar /> : <ChatListHeader />}
-                {this.renderChatListPreview(contacts)}
+                {isShowSettingsBar ? (
+                    <SettingsBar />
+                ) : (
+                    <>
+                        <ChatListHeader />
+                        {this.renderChatListPreview(contacts)}
+                    </>
+                )}
             </div>
         )
     }
