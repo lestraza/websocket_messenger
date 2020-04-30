@@ -32,7 +32,6 @@ export default class AddContact extends React.Component<IAddContactProps> {
     @action.bound
     public onClickAddContact() {
         const { addContact } = this.dialogStore
-        const { id } = this.authStore.client
         addContact()
     }
 
@@ -42,7 +41,7 @@ export default class AddContact extends React.Component<IAddContactProps> {
         showOrCloseAddContactModal()
     }
     public render() {
-        const { email, name, lastname, id } = this.dialogStore.newContact
+        const { email, name, lastname } = this.dialogStore.newContact
         const { addContactServerError, isContactReceived } = this.dialogStore
 
         return (

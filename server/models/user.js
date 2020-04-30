@@ -30,10 +30,6 @@ const userSchema = mongoose.Schema({
     type: Array,
     ref: "User",
   },
-  dialogs: {
-    type: Array,
-    ref: "Dialog",
-  },
   avatarUrl: {
     type: String,
   },

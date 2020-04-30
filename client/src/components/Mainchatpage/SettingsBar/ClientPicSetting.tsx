@@ -3,8 +3,8 @@ import { IGetStore } from '../../../store/MainStore'
 import { inject, observer } from 'mobx-react'
 import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { action } from 'mobx'
-import defaultUserPic from '../../../assets/default-user.png'
+import { action, computed } from 'mobx'
+import AvatarImg from '../../../Commons/AvatarImg'
 
 export interface IClientPicSettingProps {}
 
@@ -14,16 +14,10 @@ export default class ClientPicSetting extends React.Component<
     IClientPicSettingProps
 > {
     authStore = this.injected.getStore('authStore')
+    mainStore = this.injected.getStore('mainStore')
 
     private get injected() {
         return this.props as IClientPicSettingProps & IGetStore
-    }
-
-    private get backgroundImage() {
-        const { avatarUrl } = this.authStore.client
-        return {
-            backgroundImage: `url(${avatarUrl ? avatarUrl : defaultUserPic})`,
-        }
     }
 
     @action.bound
@@ -31,17 +25,13 @@ export default class ClientPicSetting extends React.Component<
         event.preventDefault()
         const target = event.currentTarget
         const { changeProfilePhoto } = this.authStore
-        const { id = '' } = this.authStore.client
-        changeProfilePhoto(target, id)
+        changeProfilePhoto(target)
     }
     public render() {
         return (
             <div className="client-settings__client-pic-container">
-                <div
-                    className="client-settings__client-pic"
-                    style={this.backgroundImage}
-                >
-                    <div className="client-settings__client-pic-shadow-container">
+                <AvatarImg className="client-settings__client-pic">
+                <div className="client-settings__client-pic-shadow-container">
                         <input
                             type="file"
                             id="upload-input"
@@ -62,7 +52,7 @@ export default class ClientPicSetting extends React.Component<
                             Change profile photo
                         </label>
                     </div>
-                </div>
+                </AvatarImg>
             </div>
         )
     }

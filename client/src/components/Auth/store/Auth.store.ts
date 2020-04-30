@@ -3,10 +3,11 @@ import { DialogStore } from './../../Mainchatpage/Dialog/store/Dialog.store'
 import { IUser } from './Auth.interface'
 import { AbstractStore } from './../../../store/Abstract.store'
 import {
-    ISaveProfilePhotoResponse,
     saveProfilePhotoReq,
+    addProfilePhotoReq,
+    ISaveProfilePhotoResponse,
 } from './../../../requests/index'
-import { action, observable, runInAction, computed, reaction } from 'mobx'
+import { action, observable, runInAction, reaction } from 'mobx'
 import {
     registerClient,
     loginClientReq,
@@ -52,10 +53,7 @@ export class AuthStore extends AbstractStore {
     public clientId: string = ''
 
     @observable
-    public errorExistedEmail: string = ''
-
-    @observable
-    public errorAuthentication: string = ''
+    public serverError: string = ''
 
     @observable
     public isAuthenticatedByToken: boolean = false
@@ -97,6 +95,7 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public registerNewClient() {
+        this.serverError = ''
         return registerClient(this.clientRegisterProps)
             .then(() => {
                 runInAction(() => {
@@ -112,13 +111,14 @@ export class AuthStore extends AbstractStore {
             })
             .catch((err) => {
                 runInAction(() => {
-                    this.errorExistedEmail = err.message
+                    this.serverError = err.error
                 })
             })
     }
 
     @action.bound
     public clientLogin() {
+        this.serverError = ''
         loginClientReq(this.clientRegisterProps)
             .then((res) => {
                 runInAction(() => {
@@ -132,7 +132,7 @@ export class AuthStore extends AbstractStore {
             })
             .catch((err) => {
                 runInAction(() => {
-                    this.errorAuthentication = err.message
+                    this.serverError = err.error
                 })
             })
     }
@@ -144,10 +144,10 @@ export class AuthStore extends AbstractStore {
         ).split(';')
         for (let i = 0; i < decodeCookies.length; i++) {
             let z = decodeCookies[i]
-            while (z.charAt(0) == ' ') {
+            while (z.charAt(0) === ' ') {
                 z = z.substring(1)
             }
-            if (z.indexOf(name) == 0) {
+            if (z.indexOf(name) === 0) {
                 return z.substring(name.length, z.length)
             }
         }
@@ -207,7 +207,6 @@ export class AuthStore extends AbstractStore {
     @action.bound
     public logout() {
         let cookieName: string = 'user_token='
-        const token: any = this.getCookie(cookieName)
         document.cookie = `${cookieName}; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`
         this.authClient()
     }
@@ -222,18 +221,24 @@ export class AuthStore extends AbstractStore {
     }
 
     @action.bound
-    public changeProfilePhoto(target: any, id: string) {
-        const blob = new Blob([target.files[0]], { type: 'application/json' })
-        const fileReader = new FileReader()
-        fileReader.addEventListener('load', (target) => {
-            console.log(fileReader.result)
+    public changeProfilePhoto(target: any) {
+        const data = new FormData()
+        data.append('file', target.files[0])
+
+        addProfilePhotoReq(data).then((avatarUrl) => {
+            const _id = this.client.id || ''
+            const data: ISaveProfilePhotoResponse = {
+                avatarUrl,
+                _id,
+            }
+            saveProfilePhotoReq(data)
+                .then(() => {                    
+                    runInAction(() => {
+                        this.client.avatarUrl = avatarUrl                        
+                    })
+                })
+                .catch()
         })
-        const avatarUrl = fileReader.readAsArrayBuffer(blob)
-        const args: ISaveProfilePhotoResponse = {
-            avatarUrl: avatarUrl,
-            _id: id,
-        }
-        saveProfilePhotoReq(args)
     }
 
     @action.bound
@@ -252,7 +257,7 @@ export class AuthStore extends AbstractStore {
             })
             .catch((err) => {
                 runInAction(() => {
-                    console.error(err)
+                    this.serverError = err.error
                 })
             })
     }

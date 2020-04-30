@@ -1,5 +1,5 @@
 import * as React from 'react'
-import MainStore, { IGetStore } from '../../../store/MainStore'
+import { IGetStore } from '../../../store/MainStore'
 import { action, observable } from 'mobx'
 import { inject, observer } from 'mobx-react'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
@@ -13,7 +13,6 @@ export interface ISettingsBarHeaderProps {}
 export default class SettingsBarHeader extends React.Component<
     ISettingsBarHeaderProps
 > {
-    mainStore = this.injected.getStore('mainStore')
     authStore = this.injected.getStore('authStore')
 
     private get injected() {

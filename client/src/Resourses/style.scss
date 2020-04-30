@@ -263,9 +263,15 @@ h1 {
     &__header {
         @extend .chat-header;
         box-sizing: border-box;
-        padding: 17px;
+        padding: 17px 25px 17px 17px;
+        display: flex;
+        justify-content: space-between;
     }
-
+    &__header-menu {
+        cursor: pointer;
+        
+    }
+    
     &__screen {
         overflow: auto;
         height: calc(100% - 165px);

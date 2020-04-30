@@ -23,7 +23,7 @@ export default class ChatList extends React.Component<IChatListProps> {
     @action.bound
     public renderChatListPreview(contacts: IContactResponse[]) {
         return contacts.map((contact) => {
-            return <ChatPreview contact={contact} />
+            return <ChatPreview contact={contact} key={contact.name + contact.lastname}/>
         })
     }
 

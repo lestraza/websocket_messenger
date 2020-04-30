@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
-import MainStore, { IGetStore } from '../../store/MainStore'
+import { IGetStore } from '../../store/MainStore'
 import { action, observable } from 'mobx'
 import { Link } from 'react-router-dom'
 import { RouterProps } from 'react-router'
@@ -56,7 +56,6 @@ export default class RegisterClient extends React.Component<
             this.successfullRegisterNotification = true
         } else {
             this.requiredDataWarning = true
-            console.log('error')
         }
     }
 
@@ -67,7 +66,7 @@ export default class RegisterClient extends React.Component<
             email,
             password,
         } = this.authStore.clientRegisterProps
-        const { errorExistedEmail } = this.authStore
+        const { serverError} = this.authStore
         return (
             <div className="create-account form">
                 <Link
@@ -140,8 +139,8 @@ export default class RegisterClient extends React.Component<
                         Please add all reqiured data
                     </div>
                 )}
-                {errorExistedEmail && <div>{errorExistedEmail}</div>}
-                {this.successfullRegisterNotification && !errorExistedEmail ? (
+                {serverError && <div>{serverError}</div>}
+                {this.successfullRegisterNotification && !serverError ? (
                     <div>
                         You have successfully registered! <br />
                         To continue working in the application please

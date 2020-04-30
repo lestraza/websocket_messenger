@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { action } from 'mobx'
-import MainStore, { IGetStore } from '../../../store/MainStore'
+import { IGetStore } from '../../../store/MainStore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 

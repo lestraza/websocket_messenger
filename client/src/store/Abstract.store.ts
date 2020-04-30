@@ -1,6 +1,4 @@
 import { IInnerStores } from './MainStore'
-import { AuthStore } from './../components/Auth/store/Auth.store'
-import { SettingsStore } from './../components/Mainchatpage/SettingsBar/store/Settings.store'
 import MainStore from './MainStore'
 import { observable, action } from 'mobx'
 

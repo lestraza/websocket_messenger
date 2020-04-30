@@ -1,4 +1,4 @@
-import { IContactResponse, findDialogById } from './../../../../requests/index'
+import { IContactResponse, findDialogById, deleteContactReq } from './../../../../requests/index'
 import { IMessage } from './Dialog.interface'
 import { IUser } from './../../../Auth/store/Auth.interface'
 import { AbstractStore } from './../../../../store/Abstract.store'
@@ -47,6 +47,9 @@ export class DialogStore extends AbstractStore {
 
     @observable
     public isAlreadyInContacts: boolean = false
+
+    @observable
+    isShowDialogMenu: boolean = false
 
     @computed
     private get authStore() {
@@ -179,12 +182,13 @@ export class DialogStore extends AbstractStore {
             this.currentDialog = []
         }
         if (selectedContact) {
+            this.currentContact.id = contactId
             const { dialogId } = selectedContact
             this.currentDialogId = dialogId
             findDialogById(dialogId).then((dialog) => {
                 runInAction(() => {
                     socket?.emit('joinChat', dialogId)
-                    this.currentDialog = dialog.messages
+                    this.currentDialog = [...dialog.messages || []]
                     this.contacts.forEach((contact) => {
                         if (contact.id === contactId) {
                             contact.hasNewMessage = false
@@ -203,4 +207,23 @@ export class DialogStore extends AbstractStore {
             }
         })
     }
+
+    @action.bound
+    deleteContact() {
+        const data = {
+            clientId: this.authStore.client.id || '',
+            contactId: this.currentContact.id || '',
+        }
+        deleteContactReq(data)
+        .then((res) => {
+            runInAction(() => {
+                this.contacts = this.contacts.filter(contact => {
+                    return contact.id !== data.contactId
+                })
+                this.currentDialog = []
+                this.isShowDialogMenu = false
+                this.authStore.client.contacts = [...res]
+            })
+        })
+    }    
 }
