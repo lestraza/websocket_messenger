@@ -65,22 +65,24 @@ app.post("/api/users/login", (req, res) => {
 
     // find email
     User.findOne({ email: req.body.email }, (err, user) => {
-        if (!user || err) throwError(res, 403, "Email not found. Try again.")
+        if (!user || err) {
+            throwError(res, 403, "Email not found. Try again.")
+        } else {
+            user.comparePassword(req.body.password, (err, isMatch) => {
+                if (!isMatch || err) {
+                    throwError(res, 403, "Wrong password. Try again.")
+                } else {
+                    user.generateToken((err, user) => {
+                        if (err) throwError(res, 403, err)
 
-        // check password
-        user.comparePassword(req.body.password, (err, isMatch) => {
-            if (!isMatch || err) throwError(res, 403, "Wrong password. Try again.")
-
-            // generate a token
-            user.generateToken((err, user) => {
-                if (err) throwError(res, 403, err)
-
-                res.cookie("user_token", user.token).status(200).json({
-                    token: user.token,
-                    id: user._id,
-                });
+                        res.cookie("user_token", user.token).status(200).json({
+                            token: user.token,
+                            id: user._id,
+                        });
+                    });
+                }
             });
-        });
+        }
     });
 });
 
@@ -123,7 +125,7 @@ const checkFileType = (req, file, cb) => {
 }
 
 app.post("/api/users/addAvatar", (req, res) => {
-    upload(req, res, (err) => {        
+    upload(req, res, (err) => {
         if (err) {
             throwError(res, 413, err)
         } else {
@@ -154,7 +156,7 @@ app.post("/api/users/saveAvatar", (req, res) => {
 
 app.get("/api/users/getContactById", (req, res) => {
     const { contactId } = req.query;
-
+    console.log(contactId);
     User.findOne({ _id: contactId }, (err, user) => {
         if (user) {
             const { name, lastname, avatarUrl, email, _id } = user;

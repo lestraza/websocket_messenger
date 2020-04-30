@@ -18,8 +18,7 @@ export default class DialogHeader extends React.Component<IDialogHeaderProps> {
 
     private get injected() {
         return this.props as IDialogHeaderProps & IGetStore
-    }
- 
+    } 
 
     @action.bound
     onClickShowDialogMenu() {
@@ -31,7 +30,7 @@ export default class DialogHeader extends React.Component<IDialogHeaderProps> {
         return (
             <div className="dialog__header">
                 <div className="usercard usercard--small">
-                    <AvatarImg className="usercard__pic"/>
+                    <AvatarImg className="usercard__pic" user={this.authStore.client}/>
                     <div className="usercard__info">{`${name} ${lastname}`}</div>
                 </div>
                 <div

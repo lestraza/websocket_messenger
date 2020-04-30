@@ -3,9 +3,11 @@ import { inject, observer } from 'mobx-react'
 import { computed } from 'mobx'
 import { IGetStore } from '../store/Abstract.store'
 import defaultUserPic from '../assets/default-user.png'
+import { IUser } from '../components/Auth/store/Auth.interface'
 
 export interface IAvatarImgProps {
     className: string
+    user: IUser
 }
 
 @inject('getStore')
@@ -19,8 +21,8 @@ export default class AvatarImg extends React.Component<IAvatarImgProps> {
     }
 
     @computed
-    private get backgroundImage() {
-        const { avatarUrl } = this.authStore.client
+    private get backgroundImage() {        
+        const { avatarUrl } = this.props.user
         return {
             backgroundImage: `url(${
                 avatarUrl
@@ -32,7 +34,7 @@ export default class AvatarImg extends React.Component<IAvatarImgProps> {
     public render() {
         const { className } = this.props
         return (
-            <div className={className} style={this.backgroundImage}>
+            <div className={className} style={this.backgroundImage} >
                 {this.props.children}
             </div>
         )

@@ -15,6 +15,7 @@ const initContact = {
     id: '',
     name: '',
     lastname: '',
+    avatarUrl: ''
 }
 
 export class DialogStore extends AbstractStore {
@@ -186,6 +187,7 @@ export class DialogStore extends AbstractStore {
             const { dialogId } = selectedContact
             this.currentDialogId = dialogId
             findDialogById(dialogId).then((dialog) => {
+                console.log(dialog);
                 runInAction(() => {
                     socket?.emit('joinChat', dialogId)
                     this.currentDialog = [...dialog.messages || []]

@@ -146,7 +146,7 @@ export interface IContactResponse {
     name: string
     lastname: string
     email: string
-    avatarUrl: string
+    avatarUrl?: string
     hasNewMessage?: boolean
 }
 

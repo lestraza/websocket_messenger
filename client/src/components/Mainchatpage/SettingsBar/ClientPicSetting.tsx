@@ -30,7 +30,7 @@ export default class ClientPicSetting extends React.Component<
     public render() {
         return (
             <div className="client-settings__client-pic-container">
-                <AvatarImg className="client-settings__client-pic">
+                <AvatarImg className="client-settings__client-pic" user={this.authStore.client}>
                 <div className="client-settings__client-pic-shadow-container">
                         <input
                             type="file"
