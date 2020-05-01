@@ -36,7 +36,7 @@ export class DialogStore extends AbstractStore {
     isShowAddContactModal: boolean = false
 
     @observable
-    addContactServerError: string = ''
+    serverError: string = ''
 
     @observable
     public currentDialog: IMessage[] = []
@@ -66,7 +66,7 @@ export class DialogStore extends AbstractStore {
         if (this.isShowAddContactModal) {
             this.isShowAddContactModal = false
             this.newContact = { ...initContact }
-            this.addContactServerError = ''
+            this.serverError = ''
         } else {
             this.isShowAddContactModal = true
         }
@@ -79,9 +79,9 @@ export class DialogStore extends AbstractStore {
         )
         this.newContact.email = email.trim()
         if (this.isAlreadyInContacts) {
-            this.addContactServerError = 'Contact already added'
+            this.serverError = 'Contact already added'
         } else {
-            this.addContactServerError = ''
+            this.serverError = ''
         }
     }
 
@@ -97,12 +97,12 @@ export class DialogStore extends AbstractStore {
                         this.newContact.name = res.name
                         this.newContact.lastname = res.lastname
                         this.isShowAddContactModal = true
-
+                        this.serverError =''
                         this.isContactReceived = true
                     })
                 })
                 .catch((err) => {
-                    this.addContactServerError = err.message
+                    this.serverError = err.error
                 })
         }
     }
@@ -120,7 +120,11 @@ export class DialogStore extends AbstractStore {
                 runInAction(() => {
                     this.contacts = contacts
                     this.newContact = { ...initContact }
+                    this.serverError = ''
                 })
+            })
+            .catch((err) => {
+                this.serverError = err.error
             })
         }
     }
@@ -138,11 +142,12 @@ export class DialogStore extends AbstractStore {
                     this.isShowAddContactModal = false
                     this.newContact = {...initContact}
                     this.isContactReceived = false
+                    this.serverError = ''
                 })
             })
             .catch((err) => {
                 this.isContactReceived = false
-                this.addContactServerError = err.error
+                this.serverError = err.error
             })
     }
 
@@ -165,7 +170,8 @@ export class DialogStore extends AbstractStore {
             const { contactId, dialogId } = selectedContact
             this.currentContact.id = contactId
             this.currentDialogId = dialogId
-            findDialogById(dialogId).then((dialog) => {
+            findDialogById(dialogId)
+            .then((dialog) => {
                 runInAction(() => {
                     socket?.emit('joinChat', dialogId)
                     this.currentDialog = [...(dialog.messages || [])]
@@ -175,6 +181,9 @@ export class DialogStore extends AbstractStore {
                         }
                     })
                 })
+            })
+            .catch((err) => {
+                this.serverError = err.error
             })
         }
     }
@@ -219,7 +228,8 @@ export class DialogStore extends AbstractStore {
             clientId: this.authStore.client.id || '',
             contactId: this.currentContact.id || '',
         }
-        deleteContactReq(data).then((res) => {
+        deleteContactReq(data)
+        .then((res) => {
             runInAction(() => {
                 this.contacts = this.contacts.filter((contact) => {
                     return contact.id !== data.contactId
@@ -228,7 +238,11 @@ export class DialogStore extends AbstractStore {
                 this.isShowDialogMenu = false
                 this.authStore.client.contacts = [...res]
                 this.currentContact = {...initContact}
+                this.serverError = ''
             })
+        })
+        .catch((err) => {
+            this.serverError = err.error
         })
     }
 }
