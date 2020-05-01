@@ -33,8 +33,23 @@ input[type='password'] {
     }
 }
 
+h1 {
+    font-size: 24px;
+    font-weight: normal;
+    margin: 0;
+    color: #4b5d6d;
+}
+
 .font-small {
     font-size: 0.8em;
+}
+
+.spinner-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .button {
@@ -94,6 +109,7 @@ input[type='password'] {
     justify-content: center;
     align-items: center;
     flex-grow: 1;
+    height: calc(100vh - 760px);
 }
 
 .app-container {
@@ -110,7 +126,8 @@ input[type='password'] {
 }
 
 .chat-header {
-    height: 6%;
+    height: 70px;
+    min-height: 70px;
     width: 100%;
     background-color: #ededed;
 }
@@ -125,7 +142,9 @@ input[type='password'] {
         display: flex;
     }
 
-    &__header-settings-button {
+    &__header-settings-button,
+    &__header-add-contact,
+    .logout-container {
         width: 50px;
         height: 50px;
         padding: 10px;
@@ -134,10 +153,19 @@ input[type='password'] {
         justify-content: center;
         align-items: center;
         transition: all 0.3s ease;
+        color: #8a9aa2;
 
         &:hover {
             background: rgba(0, 0, 0, 0.08);
         }
+    }
+
+    &__header-add-contact {
+        margin-left: auto;
+    }
+
+    &__header-logout {
+        flex-grow: 1;
     }
 }
 
@@ -229,26 +257,23 @@ input[type='password'] {
     }
 }
 
-.logout-container {
-    font-size: 23px;
-    line-height: 75px;
-    margin-left: 30px;
-    cursor: pointer;
-}
-
 .dialog {
     width: 70%;
 
     &__header {
         @extend .chat-header;
+        box-sizing: border-box;
+        padding: 17px;
     }
 
     &__screen {
-        height: 85%;
+        overflow: auto;
+        height: calc(100% - 165px);
+        padding: 20px;
+        box-sizing: border-box;
     }
 
     &__type-message {
-        height: 9%;
         width: 100%;
         display: flex;
         box-sizing: border-box;
@@ -267,6 +292,7 @@ input[type='password'] {
         box-sizing: border-box;
         width: 100%;
         height: 65px;
+        min-height: 65px;
         border: none;
         border-radius: 10px;
         border: 1px solid #cccccc;
@@ -275,7 +301,7 @@ input[type='password'] {
 
         &:focus {
             outline: none;
-            border: 1px solid #96c1ab;
+            border: 1px solid $main-color-light-blue;
         }
 
         &::placeholder {
@@ -304,15 +330,34 @@ input[type='password'] {
         }
     }
 
-    &__screen {
-        padding: 20px;
-        box-sizing: border-box;
-    }
-
     &__emodji {
         position: absolute;
         bottom: 35px;
         left: 30px;
+    }
+}
+
+.usercard {
+    display: flex;
+
+    &__pic {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 1px solid #bdbdbd;
+        background: lightgray;
+        background-size: contain;
+    }
+
+    &__info {
+        margin: 5px 0 0 10px;
+    }
+
+    &--small {
+        .usercard__pic {
+            width: 35px;
+            height: 35px;
+        }
     }
 }
 
@@ -337,6 +382,20 @@ input[type='password'] {
         background-size: cover;
         background-position: center;
         border-radius: 50%;
+    }
+
+    &__notification {
+        flex-grow: 1;
+        display: flex;
+        justify-content: flex-end;
+        color: #ff5200;
+    }
+}
+.selected-contact {
+    background-color: #e6deb9;
+
+    &:hover {
+        background-color: darken($color: #e6deb9, $amount: 3);
     }
 }
 
@@ -393,6 +452,72 @@ input[type='password'] {
     }
 }
 
+.blur {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.add-contact {
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        padding: 25px 30px;
+        background: #e4ebf1;
+    }
+
+    &__container {
+        animation: popup 0.4s ease forwards;
+        background: #fff;
+        width: 600px;
+        height: 500px;
+        position: absolute;
+        top: 174px;
+        right: 300px;
+        box-shadow: 0 0 25px 3px rgba(0, 0, 0, 0.2);
+        box-sizing: border-box;
+
+        input[type='email'] {
+            font-size: 17px;
+        }
+    }
+    &__form {
+        padding: 30px;
+    }
+
+    &__close-modal {
+        cursor: pointer;
+        color: #4b5d6d;
+        float: right;
+    }
+}
 .auth-container {
     margin: 40px auto;
+}
+
+.message {
+    padding: 15px;
+    font-size: 17px;
+
+    &--error {
+        background: #ffe6ea;
+        border: 1px solid #ffb7af;
+    }
+}
+
+@keyframes popup {
+    0% {
+        opacity: 0.5;
+        transform: scale(0, 0);
+    }
+    80% {
+        transform: scale(1.1, 1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1, 1);
+    }
 }

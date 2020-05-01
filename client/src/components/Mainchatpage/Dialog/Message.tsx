@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
-import MainStore, { IMessage, IGetStore } from '../../../store/MainStore'
+import { IGetStore } from '../../../store/MainStore'
 import { computed } from 'mobx'
+import { IMessage } from './store/Dialog.interface'
 
 export interface IMessageProps {
     message: IMessage
@@ -10,7 +11,7 @@ export interface IMessageProps {
 @inject('getStore')
 @observer
 export default class Message extends React.Component<IMessageProps> {
-    mainStore = this.injected.getStore('mainStore')
+    authStore = this.injected.getStore('authStore')
 
     private get injected() {
         return this.props as IMessageProps & IGetStore
@@ -18,9 +19,9 @@ export default class Message extends React.Component<IMessageProps> {
 
     @computed
     private get isOutgoing() {
-        const { clientId } = this.mainStore
+        const { id } = this.authStore.client
         const { message } = this.props
-        return message.userId === clientId
+        return message.id === id
     }
 
     @computed
@@ -34,7 +35,7 @@ export default class Message extends React.Component<IMessageProps> {
     }
 
     public render() {
-        const { fullName, text } = this.props.message
+        const { name, lastname, text } = this.props.message
         return (
             <div
                 className={`message-screen-container ${
@@ -42,7 +43,7 @@ export default class Message extends React.Component<IMessageProps> {
                 }`}
             >
                 <div className="message-screen-container__user_name">
-                    {fullName}
+                    {`${name} ${lastname}`}
                 </div>
                 <div className="message-screen-container__message">{text}</div>
                 <div className="message-screen-container__time_stamp">

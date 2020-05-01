@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react'
 import { Link } from 'react-router-dom'
 import { IGetStore } from '../../store/MainStore'
 import { action, observable } from 'mobx'
-import { IRegisterProps } from './store/Auth.store'
+import { IUser } from './store/Auth.interface'
 
 export interface ISignInProps {}
 @inject('getStore')
@@ -25,7 +25,7 @@ export default class SignIn extends React.Component<ISignInProps> {
         const value = e.currentTarget.value
         const prop = e.currentTarget.dataset.id
         if (prop) {
-            saveInputValueRegisterForm(prop as keyof IRegisterProps, value)
+            saveInputValueRegisterForm(prop as keyof IUser, value)
         }
     }
 

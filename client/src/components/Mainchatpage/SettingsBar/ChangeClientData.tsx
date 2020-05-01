@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react'
 import { IGetStore } from '../../../store/MainStore'
 import FormInput from '../../../Commons/FormInput'
 import { action } from 'mobx'
-import { IChangeSettingsProps } from './store/Settings.store'
+import { IUser } from '../../Auth/store/Auth.interface'
 
 export interface ISettingsClientDataProps {}
 
@@ -24,10 +24,7 @@ export default class SettingsClientData extends React.Component<
         const value = e.currentTarget.value
         const prop = e.currentTarget.dataset.id
         if (prop) {
-            saveInputValueNewSettingsForm(
-                prop as keyof IChangeSettingsProps,
-                value
-            )
+            saveInputValueNewSettingsForm(prop as keyof IUser, value)
         }
     }
 
@@ -40,6 +37,7 @@ export default class SettingsClientData extends React.Component<
 
     public render() {
         const { name, lastname, email, password } = this.authStore.newSettings
+        console.log(this.authStore.client)
         return (
             <form
                 className="client-settings__data-change-form form"
@@ -52,7 +50,7 @@ export default class SettingsClientData extends React.Component<
                     <FormInput
                         type={'text'}
                         id={'name'}
-                        placeholder={'Add your new name'}
+                        placeholder={name}
                         required={false}
                         onChange={this.onChangeSaveValue}
                         className={'client-settings__data-change-prop'}
@@ -67,7 +65,7 @@ export default class SettingsClientData extends React.Component<
                     <FormInput
                         type={'text'}
                         id={'lastname'}
-                        placeholder={'Add your new lastname'}
+                        placeholder={lastname}
                         required={false}
                         onChange={this.onChangeSaveValue}
                         className={'client-settings__data-change-prop'}
@@ -82,7 +80,7 @@ export default class SettingsClientData extends React.Component<
                     <FormInput
                         type={'text'}
                         id={'email'}
-                        placeholder={'Add your new email'}
+                        //placeholder={'Add your new email'}
                         required={false}
                         onChange={this.onChangeSaveValue}
                         className={'client-settings__data-change-prop'}

@@ -13,7 +13,7 @@ export interface IChangeSettingsProps {
     lastname?: string
     email?: string
     password?: string
-    _id: string
+    _id?: string
 }
 
 export class SettingsStore extends AbstractStore {

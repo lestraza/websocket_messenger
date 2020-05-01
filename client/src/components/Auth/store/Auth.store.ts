@@ -1,44 +1,29 @@
+import { IMessage } from './../../Mainchatpage/Dialog/store/Dialog.interface'
+import { DialogStore } from './../../Mainchatpage/Dialog/store/Dialog.store'
+import { IUser } from './Auth.interface'
 import { AbstractStore } from './../../../store/Abstract.store'
 import {
     ISaveProfilePhotoResponse,
     saveProfilePhotoReq,
 } from './../../../requests/index'
-import { action, observable, runInAction, computed } from 'mobx'
+import { action, observable, runInAction, computed, reaction } from 'mobx'
 import {
     registerClient,
     loginClientReq,
     authClientReq,
     updateClientSettings,
 } from '../../../requests'
-
-export interface IRegisterProps {
-    name?: string
-    lastname?: string
-    email: string
-    password: string
-    avatarUrl?: string
-}
-
-export interface IClient {
-    id: string
-    name: string
-    email: string
-    lastName: string
-    avatarUrl: string
-    isOnline: boolean
-}
-
-export interface IChangeSettingsProps {
-    name?: string
-    lastname?: string
-    email?: string
-    password?: string
-    _id: string
-}
+import io from 'socket.io-client'
 
 export class AuthStore extends AbstractStore {
     @observable
-    public clientRegisterProps: IRegisterProps = {
+    public isAuthorizing: boolean = false
+
+    @observable
+    public socket?: SocketIOClient.Socket
+
+    @observable
+    public clientRegisterProps: IUser = {
         name: '',
         lastname: '',
         email: '',
@@ -47,12 +32,13 @@ export class AuthStore extends AbstractStore {
     }
 
     @observable
-    public client: IClient = {
+    public client: IUser = {
         id: '',
         name: '',
-        lastName: '',
+        lastname: '',
         email: '',
         avatarUrl: '',
+        contacts: [],
         isOnline: false,
     }
 
@@ -75,33 +61,38 @@ export class AuthStore extends AbstractStore {
     public isAuthenticatedByToken: boolean = false
 
     @observable
-    newSettings: IChangeSettingsProps = {
-        name: '',
-        lastname: '',
-        email: '',
-        password: '',
-        _id: '',
-    }
+    newSettings: IUser = {}
 
     @observable
     public isShowSettingsBar: boolean = false
 
-    @computed
-    private get settingsStore() {
-        return this.mainStore.getStore('settingsStore')
+    private get dialogStore() {
+        return this.mainStore.getStore('dialogStore') as DialogStore
     }
 
     constructor() {
         super()
-        this.authClient()
+
+        this.isAuthorizing = true
+        this.authClient().finally(() => {
+            runInAction(() => {
+                this.isAuthorizing = false
+            })
+        })
+
+        reaction(
+            () => this.client,
+            () => {
+                this.newSettings = { ...this.client }
+            }
+        )
     }
 
     @action.bound
-    public saveInputValueRegisterForm(
-        prop: keyof IRegisterProps,
-        value: string
-    ) {
-        this.clientRegisterProps[prop] = value
+    public saveInputValueRegisterForm(prop: keyof IUser, value: string) {
+        if (prop) {
+            ;(this.clientRegisterProps[prop] as string) = value
+        }
     }
 
     @action.bound
@@ -165,30 +156,51 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public authClient() {
-        return new Promise((resolve, reject) => {
-            const cookieName: string = 'user_token='
-            const token: any = this.getCookie(cookieName)
-            authClientReq(token)
-                .then((res) => {
-                    runInAction(() => {
-                        this.client = {
-                            id: res.id,
-                            name: res.name,
-                            lastName: res.lastname,
-                            email: '',
-                            avatarUrl: res.avatarUrl,
-                            isOnline: res.isOnline,
-                        }
-                        this.isAuthenticated = true
-                        resolve()
-                    })
+        const cookieName: string = 'user_token='
+        const token: any = this.getCookie(cookieName)
+        return authClientReq(token)
+            .then((res) => {
+                runInAction(() => {
+                    this.client = {
+                        id: res.id,
+                        name: res.name,
+                        lastname: res.lastname,
+                        email: res.email,
+                        avatarUrl: res.avatarUrl,
+                        contacts: res.contacts,
+                        isOnline: res.isOnline,
+                    }
+                    this.isAuthenticated = true
+                    this.dialogStore.getContactsById()
+                    this.connectSocket()
                 })
-                .catch((err) => {
-                    runInAction(() => {
-                        this.isAuthenticated = false
-                        reject()
-                    })
+            })
+            .catch((err) => {
+                runInAction(() => {
+                    this.isAuthenticated = false
+                    this.socket?.emit('disconnect')
                 })
+            })
+    }
+
+    @action.bound
+    private connectSocket() {
+        this.socket = io('http://localhost:3006/', {
+            query: {
+                id: this.client.id,
+            },
+        })
+
+        this.socket.on('connect', () => {
+            console.log('connected')
+        })
+        this.socket.on('receiveMessage', (dialogMessage: IMessage) => {
+            const { currentDialog } = this.dialogStore
+            currentDialog.push(dialogMessage)
+        })
+        this.socket.on('inviteToChat', (id: string) => {
+            const { sendNotification } = this.dialogStore
+            sendNotification(id)
         })
     }
 
@@ -196,7 +208,6 @@ export class AuthStore extends AbstractStore {
     public logout() {
         let cookieName: string = 'user_token='
         const token: any = this.getCookie(cookieName)
-        //cookieName = `${cookieName}${token}; Path=/`
         document.cookie = `${cookieName}; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`
         this.authClient()
     }
@@ -214,31 +225,25 @@ export class AuthStore extends AbstractStore {
     public changeProfilePhoto(target: any, id: string) {
         const blob = new Blob([target.files[0]], { type: 'application/json' })
         const fileReader = new FileReader()
-        console.log(blob)
         fileReader.addEventListener('load', (target) => {
             console.log(fileReader.result)
         })
         const avatarUrl = fileReader.readAsArrayBuffer(blob)
-        console.log(avatarUrl)
         const args: ISaveProfilePhotoResponse = {
             avatarUrl: avatarUrl,
             _id: id,
         }
-        console.log(args)
         saveProfilePhotoReq(args)
     }
 
     @action.bound
-    public saveInputValueNewSettingsForm(
-        prop: keyof IChangeSettingsProps,
-        value: string
-    ) {
-        this.newSettings[prop] = value
+    public saveInputValueNewSettingsForm(prop: keyof IUser, value: string) {
+        ;(this.newSettings[prop] as string) = value
     }
 
     @action.bound
     public submutNewSettings() {
-        this.newSettings._id = this.client.id
+        this.newSettings.id = this.client.id
         updateClientSettings(this.newSettings)
             .then((res) => {
                 runInAction(() => {

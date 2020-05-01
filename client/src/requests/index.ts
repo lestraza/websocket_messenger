@@ -1,5 +1,10 @@
+import {
+    IUserContacts,
+    IMessage,
+} from './../components/Mainchatpage/Dialog/store/Dialog.interface'
+import { IUser } from './../components/Auth/store/Auth.interface'
 import { IChangeSettingsProps } from './../components/Mainchatpage/SettingsBar/store/Settings.store'
-import { IRegisterProps } from './../components/Auth/store/Auth.store'
+import io from 'socket.io-client'
 
 export interface IRegisterResponse {
     success: string
@@ -16,7 +21,7 @@ export interface IAuthResponse {
     name: string
     lastname: string
     avatarUrl: string
-    dialogs: []
+    contacts: []
 }
 
 export interface ISaveProfilePhotoResponse {
@@ -24,7 +29,7 @@ export interface ISaveProfilePhotoResponse {
     _id: string
 }
 
-export function registerClient(clientData: IRegisterProps) {
+export function registerClient(clientData: IUser) {
     return new Promise<IRegisterResponse>((resolve, reject) => {
         return fetch('/api/users/register', {
             method: 'POST',
@@ -44,7 +49,7 @@ export function registerClient(clientData: IRegisterProps) {
     })
 }
 
-export function loginClientReq(clientData: IRegisterProps) {
+export function loginClientReq(clientData: IUser) {
     return new Promise<ILoginResponse>((resolve, reject) => {
         return fetch('/api/users/login', {
             method: 'POST',
@@ -64,7 +69,7 @@ export function loginClientReq(clientData: IRegisterProps) {
     })
 }
 
-export function authClientReq(token: IAuthResponse) {
+export function authClientReq(token: string) {
     return new Promise<IAuthResponse>((resolve, reject) => {
         return fetch('/api/users/auth', {
             method: 'POST',
@@ -107,6 +112,92 @@ export function saveProfilePhotoReq(data: ISaveProfilePhotoResponse) {
 export function updateClientSettings(data: IChangeSettingsProps) {
     return new Promise<IChangeSettingsProps>((resolve, reject) => {
         return fetch('/api/users/updateClient', {
+            method: 'GET',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then((res) => {
+            res.json().then((parsedRes) => {
+                if (res.status === 200) {
+                    resolve(parsedRes)
+                } else {
+                    reject(parsedRes)
+                }
+            })
+        })
+    })
+}
+
+export interface IContactResponse {
+    id: string
+    name: string
+    lastname: string
+    email: string
+    avatarUrl: string
+    hasNewMessage?: boolean
+}
+
+export function getContactById(contactId: string) {
+    return new Promise<IContactResponse>((res, rej) => {
+        return fetch(`/api/users/getContactById?contactId=${contactId}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((res) => res.json())
+            .then((parsedRes: IContactResponse) => {
+                res(parsedRes)
+            })
+            .catch((err) => {
+                rej(err)
+            })
+    })
+}
+
+//////////////////////////////////
+/////    ADD CONTACTS
+//////////////////////////////////
+export interface IAddContactProps {
+    clientId: string
+    contactId: string
+    //contactId: string
+}
+
+export interface IFindContactResponse {
+    id: string
+    avatarUrl: string
+    name: string
+    lastname: string
+}
+
+export interface IFindContactProps {
+    email: string
+}
+
+export function findContactReq(email: string) {
+    return new Promise<IFindContactResponse>((resolve, reject) => {
+        return fetch('/api/users/findContact', {
+            method: 'POST',
+            body: JSON.stringify({ email }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then((res) => {
+            res.json().then((parsedRes) => {
+                if (res.status === 200) {
+                    resolve(parsedRes)
+                } else {
+                    reject(parsedRes)
+                }
+            })
+        })
+    })
+}
+
+export function addContactReq(data: IAddContactProps) {
+    return new Promise<IContactResponse>((resolve, reject) => {
+        return fetch('/api/users/addContact', {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -121,5 +212,24 @@ export function updateClientSettings(data: IChangeSettingsProps) {
                 }
             })
         })
+    })
+}
+export interface IDialogResponse {
+    messages: IMessage[]
+}
+export function findDialogById(dialogId: string) {
+    return new Promise<IDialogResponse>((res, rej) => {
+        return fetch(`/api/users/getDialogById?dialogId=${dialogId}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((res) => res.json())
+            .then((parsedRes: IDialogResponse) => {
+                res(parsedRes)
+            })
+            .catch((err) => {
+                rej(err)
+            })
     })
 }

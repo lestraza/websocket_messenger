@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react'
 import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { action } from 'mobx'
+import defaultUserPic from '../../../assets/default-user.png'
 
 export interface IClientPicSettingProps {}
 
@@ -13,16 +14,15 @@ export default class ClientPicSetting extends React.Component<
     IClientPicSettingProps
 > {
     authStore = this.injected.getStore('authStore')
-    settingsStore = this.injected.getStore('settingsStore')
 
     private get injected() {
         return this.props as IClientPicSettingProps & IGetStore
     }
 
     private get backgroundImage() {
-        const { client } = this.authStore
+        const { avatarUrl } = this.authStore.client
         return {
-            backgroundImage: `url(${client.avatarUrl})`,
+            backgroundImage: `url(${avatarUrl ? avatarUrl : defaultUserPic})`,
         }
     }
 
@@ -30,8 +30,8 @@ export default class ClientPicSetting extends React.Component<
     OnChangeUploadPic(event: React.SyntheticEvent<HTMLInputElement>) {
         event.preventDefault()
         const target = event.currentTarget
-        const { changeProfilePhoto } = this.settingsStore
-        const { id } = this.authStore.client
+        const { changeProfilePhoto } = this.authStore
+        const { id = '' } = this.authStore.client
         changeProfilePhoto(target, id)
     }
     public render() {

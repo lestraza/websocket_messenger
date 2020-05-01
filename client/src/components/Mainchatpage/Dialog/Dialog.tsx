@@ -1,17 +1,21 @@
 import React, { Component } from 'react'
 import { action } from 'mobx'
 import { inject, observer } from 'mobx-react'
-import MainStore, { IGetStore } from '../../../store/MainStore'
+import { IGetStore } from '../../../store/MainStore'
 import MessageScreenContainer from './MessageScreenContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { faSmile } from '@fortawesome/free-regular-svg-icons'
+import AddContact from '../Contacts/AddContact'
+import defaultUserPic from '../../../assets/default-user.png'
 
 export interface IDialogProps {}
 @inject('getStore')
 @observer
 export default class Dialog extends Component<IDialogProps> {
     mainStore = this.injected.getStore('mainStore')
+    dialogStore = this.injected.getStore('dialogStore')
+    authStore = this.injected.getStore('authStore')
 
     private get injected() {
         return this.props as IDialogProps & IGetStore
@@ -20,20 +24,34 @@ export default class Dialog extends Component<IDialogProps> {
     @action.bound
     formSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
-        this.mainStore.sendMessage()
+        this.dialogStore.sendMessage()
     }
 
     @action.bound
     onChangeSaveValue(e: React.FormEvent<HTMLInputElement>) {
-        const { saveNewMessage } = this.mainStore
+        const { saveNewMessage } = this.dialogStore
         const value = e.currentTarget.value
         saveNewMessage(value)
     }
     public render() {
-        const { newMessage } = this.mainStore
+        const { newMessage } = this.dialogStore
+        const { isShowAddContactModal } = this.dialogStore
+        const { name, lastname, avatarUrl } = this.authStore.client
         return (
             <div className="dialog">
-                <div className="dialog__header"></div>
+                <div className="dialog__header">
+                    <div className="usercard usercard--small">
+                        <div
+                            className="usercard__pic"
+                            style={{
+                                backgroundImage: `url(${
+                                    avatarUrl ? avatarUrl : defaultUserPic
+                                })`,
+                            }}
+                        ></div>
+                        <div className="usercard__info">{`${name} ${lastname}`}</div>
+                    </div>
+                </div>
                 <div className="dialog__screen">
                     <MessageScreenContainer />
                 </div>
@@ -63,6 +81,7 @@ export default class Dialog extends Component<IDialogProps> {
                         />
                     </div>
                 </form>
+                {isShowAddContactModal && <AddContact />}
             </div>
         )
     }
