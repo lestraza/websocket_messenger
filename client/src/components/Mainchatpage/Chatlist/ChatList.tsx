@@ -30,7 +30,6 @@ export default class ChatList extends React.Component<IChatListProps> {
     public render() {
         const { isShowSettingsBar } = this.authStore
         const { contacts } = this.dialogStore
-
         return (
             <div className="chat-list">
                 {isShowSettingsBar ? (
