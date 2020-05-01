@@ -3,10 +3,9 @@ import { inject, observer } from 'mobx-react'
 import { IGetStore } from '../../../store/Abstract.store'
 import { IContactResponse } from '../../../requests'
 import { action } from 'mobx'
-import defaultUserPic from '../../../assets/default-user.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
-import AvatarImg from '../../../Commons/AvatarImg'
+import AvatarImg from '../../Commons/AvatarImg'
 
 export interface IChatPreviewProps {
     contact: IContactResponse
@@ -31,9 +30,12 @@ export default class ChatPreview extends React.Component<IChatPreviewProps> {
 
     public render() {
         const { name, lastname, id, hasNewMessage } = this.props.contact
-        const hasNotification = this.dialogStore.currentContact.id === id
-        const { id: selectedContactId } = this.dialogStore.currentContact
-
+        let selectedContactId = ''
+        console.log(this.dialogStore.currentContact.id);
+        if (this.dialogStore.currentContact.id) {
+            selectedContactId = this.dialogStore.currentContact.id
+        }
+        
         return (
             <div
                 className={`chat-preview ${
@@ -48,7 +50,7 @@ export default class ChatPreview extends React.Component<IChatPreviewProps> {
                 <div className="chat-preview__user">
                     {`${name} ${lastname}`}
                 </div>
-                {hasNotification && (
+                {hasNewMessage && (
                     <div className="chat-preview__notification">
                         <FontAwesomeIcon icon={faEnvelope} />
                     </div>

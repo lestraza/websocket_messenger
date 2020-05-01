@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { computed } from 'mobx'
-import { IGetStore } from '../store/Abstract.store'
-import defaultUserPic from '../assets/default-user.png'
-import { IUser } from '../components/Auth/store/Auth.interface'
+import { IGetStore } from '../../store/Abstract.store'
+import defaultUserPic from '../../assets/default-user.png'
+import { IUser } from '../Auth/store/Auth.interface'
 
 export interface IAvatarImgProps {
     className: string

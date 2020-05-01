@@ -1,4 +1,8 @@
-import { IContactResponse, findDialogById, deleteContactReq } from './../../../../requests/index'
+import {
+    IContactResponse,
+    findDialogById,
+    deleteContactReq,
+} from './../../../../requests/index'
 import { IMessage } from './Dialog.interface'
 import { IUser } from './../../../Auth/store/Auth.interface'
 import { AbstractStore } from './../../../../store/Abstract.store'
@@ -15,7 +19,7 @@ const initContact = {
     id: '',
     name: '',
     lastname: '',
-    avatarUrl: ''
+    avatarUrl: '',
 }
 
 export class DialogStore extends AbstractStore {
@@ -82,27 +86,6 @@ export class DialogStore extends AbstractStore {
     }
 
     @action.bound
-    public addContact() {
-        const data = {
-            clientId: this.authStore.client.id || '',
-            contactId: this.newContact.id || '',
-        }
-        addContactReq(data)
-            .then((contact) => {
-                runInAction(() => {
-                    this.contacts = [...this.contacts, contact]
-                    this.isShowAddContactModal = false
-                    this.newContact = initContact
-                    this.isContactReceived = false
-                })
-            })
-            .catch((err) => {
-                this.isContactReceived = false
-                this.addContactServerError = err.error
-            })
-    }
-
-    @action.bound
     public findContactByEmail() {
         if (this.isAlreadyInContacts) {
             return
@@ -143,6 +126,60 @@ export class DialogStore extends AbstractStore {
     }
 
     @action.bound
+    public addContact() {
+        const data = {
+            clientId: this.authStore.client.id || '',
+            contactId: this.newContact.id || '',
+        }
+        addContactReq(data)
+            .then((contact) => {
+                runInAction(() => {
+                    this.contacts = [...this.contacts, contact]
+                    this.isShowAddContactModal = false
+                    this.newContact = {...initContact}
+                    this.isContactReceived = false
+                })
+            })
+            .catch((err) => {
+                this.isContactReceived = false
+                this.addContactServerError = err.error
+            })
+    }
+
+    @action.bound
+    public saveNewMessage(message: string) {
+        this.newMessage = message
+    }
+
+    @action.bound
+    public getContactHistory(contactId: string) {
+        const { socket } = this.authStore
+        const selectedContact = this.authStore.client.contacts?.find(
+            (contact) => contact.contactId === contactId
+        )
+        if (this.currentDialogId) {
+            socket?.emit('leaveChat', this.currentDialogId)
+            this.currentDialog = []
+        }
+        if (selectedContact) {
+            const { contactId, dialogId } = selectedContact
+            this.currentContact.id = contactId
+            this.currentDialogId = dialogId
+            findDialogById(dialogId).then((dialog) => {
+                runInAction(() => {
+                    socket?.emit('joinChat', dialogId)
+                    this.currentDialog = [...(dialog.messages || [])]
+                    this.contacts.forEach((contact) => {
+                        if (contact.id === contactId) {
+                            contact.hasNewMessage = false
+                        }
+                    })
+                })
+            })
+        }
+    }
+
+    @action.bound
     public sendMessage() {
         const { id, name, lastname } = this.authStore.client
         const authStore = this.mainStore.getStore('authStore') as AuthStore
@@ -168,40 +205,6 @@ export class DialogStore extends AbstractStore {
     }
 
     @action.bound
-    public saveNewMessage(message: string) {
-        this.newMessage = message
-    }
-
-    @action.bound
-    public getContactHistory(contactId: string) {
-        const { socket } = this.authStore
-        const selectedContact = this.authStore.client.contacts?.find(
-            (contact) => contact.contactId === contactId
-        )
-        if (this.currentDialogId) {
-            socket?.emit('leaveChat', this.currentDialogId)
-            this.currentDialog = []
-        }
-        if (selectedContact) {
-            this.currentContact.id = contactId
-            const { dialogId } = selectedContact
-            this.currentDialogId = dialogId
-            findDialogById(dialogId).then((dialog) => {
-                console.log(dialog);
-                runInAction(() => {
-                    socket?.emit('joinChat', dialogId)
-                    this.currentDialog = [...dialog.messages || []]
-                    this.contacts.forEach((contact) => {
-                        if (contact.id === contactId) {
-                            contact.hasNewMessage = false
-                        }
-                    })
-                })
-            })
-        }
-    }
-
-    @action.bound
     sendNotification(id: string) {
         this.contacts.forEach((contact) => {
             if (contact.id === id) {
@@ -216,16 +219,16 @@ export class DialogStore extends AbstractStore {
             clientId: this.authStore.client.id || '',
             contactId: this.currentContact.id || '',
         }
-        deleteContactReq(data)
-        .then((res) => {
+        deleteContactReq(data).then((res) => {
             runInAction(() => {
-                this.contacts = this.contacts.filter(contact => {
+                this.contacts = this.contacts.filter((contact) => {
                     return contact.id !== data.contactId
                 })
                 this.currentDialog = []
                 this.isShowDialogMenu = false
                 this.authStore.client.contacts = [...res]
+                this.currentContact = {...initContact}
             })
         })
-    }    
+    }
 }

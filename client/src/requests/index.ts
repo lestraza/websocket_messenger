@@ -124,7 +124,7 @@ export function saveProfilePhotoReq(data: ISaveProfilePhotoResponse) {
 export function updateClientSettings(data: IChangeSettingsProps) {
     return new Promise<IChangeSettingsProps>((resolve, reject) => {
         return fetch('/api/users/updateClient', {
-            method: 'GET',
+            method: 'POST',
             body: JSON.stringify(data),
             headers: {
                 'Content-Type': 'application/json',

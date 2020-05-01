@@ -248,7 +248,7 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public submutNewSettings() {
-        this.newSettings.id = this.client.id
+        this.newSettings.id = this.client.id        
         updateClientSettings(this.newSettings)
             .then((res) => {
                 runInAction(() => {

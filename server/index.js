@@ -186,7 +186,8 @@ app.get("/api/users/getDialogById", (req, res) => {
 });
 
 app.post("/api/users/updateClient", (req, res) => {
-    User.findOne({ _id: req.body }, (err, user) => {
+    const { id } = req.body
+    User.findOne({ _id: id }, (err, user) => {
         if (user) {
             for (key in req.body) {
                 if (key !== "_id" && req.body[key] !== "") {
@@ -295,7 +296,7 @@ app.post("/api/users/addContact", (req, res) => {
                 if (!isAlreadyContact) {
                     Dialog.findOne().where({
                         participants: {
-                            $in: [clientId, contactId]
+                            $all: [clientId, contactId]
                         }
                     }).exec((err, dialog) => {
                         if (!dialog) {
@@ -328,6 +329,7 @@ app.post("/api/users/addContact", (req, res) => {
                             if (!err) {
                                 contact.save((err, contact) => {
                                     if (!err) {
+                                        console.log(contact);
                                         res.status(200).json(contact);
                                     } else {
                                         throwError(res, 401, err)

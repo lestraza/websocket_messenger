@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { action } from 'mobx'
 import DialogMenuModal from './DialogMenuModul'
-import AvatarImg from '../../../Commons/AvatarImg'
+import AvatarImg from '../../Commons/AvatarImg'
 
 export interface IDialogHeaderProps {}
 

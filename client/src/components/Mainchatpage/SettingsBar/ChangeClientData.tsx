@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { IGetStore } from '../../../store/MainStore'
-import FormInput from '../../../Commons/FormInput'
+import FormInput from '../../Commons/FormInput'
 import { action } from 'mobx'
 import { IUser } from '../../Auth/store/Auth.interface'
 

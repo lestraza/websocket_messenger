@@ -1,10 +1,11 @@
 import * as React from 'react'
-import FormInput from '../../../Commons/FormInput'
-import { action } from 'mobx'
+import FormInput from '../../Commons/FormInput'
+import { action, observable } from 'mobx'
 import { IGetStore } from '../../../store/MainStore'
 import { inject, observer } from 'mobx-react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import Confirm from '../../Commons/Confirm'
 
 export interface IAddContactProps {}
 @inject('getStore')
@@ -16,6 +17,7 @@ export default class AddContact extends React.Component<IAddContactProps> {
     private get injected() {
         return this.props as IAddContactProps & IGetStore
     }
+
     @action.bound
     public onChangeSaveValue(e: React.ChangeEvent<HTMLInputElement>) {
         const { searchNewContactEmail } = this.dialogStore
@@ -31,6 +33,8 @@ export default class AddContact extends React.Component<IAddContactProps> {
 
     @action.bound
     public onClickAddContact() {
+        let { isContactReceived } = this.dialogStore
+        isContactReceived = false
         const { addContact } = this.dialogStore
         addContact()
     }
@@ -73,11 +77,11 @@ export default class AddContact extends React.Component<IAddContactProps> {
                         />
                     </form>
                     {isContactReceived && (
-                        <div>
-                            <div>{`Add to contacts ${name} ${lastname}?`}</div>
-                            <div onClick={this.onClickAddContact}>Yes</div>
-                            <div onClick={this.onClickCloseModal}>No</div>
-                        </div>
+                        <Confirm
+                            title={`Add to contacts ${name} ${lastname}?`}
+                            onConfirm={this.onClickAddContact}
+                            onReject={this.onClickCloseModal}
+                        />
                     )}
                     {addContactServerError && (
                         <div className="message message--error">

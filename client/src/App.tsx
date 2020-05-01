@@ -6,7 +6,7 @@ import SignIn from './components/Auth/SignIn'
 import { inject, observer } from 'mobx-react'
 import MainChatPage from './components/Mainchatpage/MainChatPage'
 import RegisterClient from './components/Auth/RegisterClient'
-import { LoaderSpinner } from './components/common/LoaderSpinner'
+import { LoaderSpinner } from './components/Commons/LoaderSpinner'
 
 export interface IAppProps {}
 @inject('getStore')
