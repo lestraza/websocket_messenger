@@ -46,7 +46,7 @@ export default class AddContact extends React.Component<IAddContactProps> {
     }
     public render() {
         const { email, name, lastname } = this.dialogStore.newContact
-        const { addContactServerError, isContactReceived } = this.dialogStore
+        const { serverError: addContactServerError, isContactReceived } = this.dialogStore
 
         return (
             <>

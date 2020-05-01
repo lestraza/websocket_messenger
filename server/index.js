@@ -263,8 +263,9 @@ app.post("/api/users/findContact", (req, res) => {
     // find email
     const { email } = req.body;
     User.findOne({ email: email }, (err, user) => {
-        if (!user || err) throwError(res, 403, "Email not found. Try again.")
-        if (user) {
+        if (!user || err) {
+            throwError(res, 403, "Email not found. Try again.")
+        } else {
             res.status(200).json({
                 id: user._id,
                 avatarUrl: user.avatarUrl,
