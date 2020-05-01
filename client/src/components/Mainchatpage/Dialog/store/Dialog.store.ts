@@ -134,10 +134,11 @@ export class DialogStore extends AbstractStore {
         addContactReq(data)
             .then((contact) => {
                 runInAction(() => {
-                    this.contacts = [...this.contacts, contact]
+                    this.currentContact = {...contact}
                     this.isShowAddContactModal = false
                     this.newContact = {...initContact}
                     this.isContactReceived = false
+                    this.contacts = [...this.contacts, contact]
                 })
             })
             .catch((err) => {
