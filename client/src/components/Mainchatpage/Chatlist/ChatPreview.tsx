@@ -30,11 +30,8 @@ export default class ChatPreview extends React.Component<IChatPreviewProps> {
 
     public render() {
         const { name, lastname, id, hasNewMessage } = this.props.contact
-        let selectedContactId = ''
-        console.log(this.dialogStore.currentContact.id);
-        if (this.dialogStore.currentContact.id) {
-            selectedContactId = this.dialogStore.currentContact.id
-        }
+        const { id: currenContactId } = this.dialogStore.currentContact
+        const selectedContactId = currenContactId ? currenContactId : undefined       
         
         return (
             <div
