@@ -2,7 +2,6 @@ import { AbstractStore } from './Abstract.store'
 import { AuthStore } from './../components/Auth/store/Auth.store'
 import { SettingsStore } from './../components/Mainchatpage/SettingsBar/store/Settings.store'
 import { observable, action, runInAction } from 'mobx'
-import link from '../images/silvio.jpg'
 import { registerClient, loginClientReq, authClientReq } from '../requests'
 import { Z_ASCII } from 'zlib'
 
@@ -70,7 +69,7 @@ class MainStore extends AbstractStore {
             id: '35s4d354',
             name: 'Erjan',
             lastName: 'Egoev',
-            avatarUrl: link,
+            avatarUrl: '',
             isOnline: true,
         }
         this.users = [...this.users, newUser]

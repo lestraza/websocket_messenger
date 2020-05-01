@@ -175,7 +175,7 @@ export class AuthStore extends AbstractStore {
                             id: res.id,
                             name: res.name,
                             lastName: res.lastname,
-                            email: res.email,
+                            email: '',
                             avatarUrl: res.avatarUrl,
                             isOnline: res.isOnline,
                         }
