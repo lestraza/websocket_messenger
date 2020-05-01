@@ -7,6 +7,7 @@ import { inject, observer } from 'mobx-react'
 import MainChatPage from './components/Mainchatpage/MainChatPage'
 import RegisterClient from './components/Auth/RegisterClient'
 import { LoaderSpinner } from './components/Commons/LoaderSpinner'
+import ServerError from './components/Commons/ServerError'
 
 export interface IAppProps {}
 @inject('getStore')
@@ -54,6 +55,7 @@ export default class App extends React.Component<IAppProps> {
                         ) : (
                             <LoaderSpinner />
                         )}
+                        
                     </div>
                 </div>
             </div>
