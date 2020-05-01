@@ -53,7 +53,7 @@ export class AuthStore extends AbstractStore {
     public clientId: string = ''
 
     @observable
-    public serverError: string = ''
+    public authStoreServerError: string = ''
 
     @observable
     public isAuthenticatedByToken: boolean = false
@@ -95,7 +95,7 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public registerNewClient() {
-        this.serverError = ''
+        this.authStoreServerError = ''
         return registerClient(this.clientRegisterProps)
             .then(() => {
                 runInAction(() => {
@@ -111,14 +111,14 @@ export class AuthStore extends AbstractStore {
             })
             .catch((err) => {
                 runInAction(() => {
-                    this.serverError = err.error
+                    this.authStoreServerError = err.error
                 })
             })
     }
 
     @action.bound
     public clientLogin() {
-        this.serverError = ''
+        this.authStoreServerError = ''
         loginClientReq(this.clientRegisterProps)
             .then((res) => {
                 runInAction(() => {
@@ -131,9 +131,8 @@ export class AuthStore extends AbstractStore {
                 })
             })
             .catch((err) => {
-                runInAction(() => {
-                    this.serverError = err.error
-                })
+                this.authStoreServerError = err.error
+                console.log(this.authStoreServerError);
             })
     }
 
@@ -257,7 +256,7 @@ export class AuthStore extends AbstractStore {
             })
             .catch((err) => {
                 runInAction(() => {
-                    this.serverError = err.error
+                    this.authStoreServerError = err.error
                 })
             })
     }

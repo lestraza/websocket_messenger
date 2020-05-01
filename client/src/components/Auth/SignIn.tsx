@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { IGetStore } from '../../store/MainStore'
 import { action, observable } from 'mobx'
 import { IUser } from './store/Auth.interface'
+import ServerError from '../Commons/ServerError'
 
 export interface ISignInProps {}
 @inject('getStore')
@@ -43,6 +44,7 @@ export default class SignIn extends React.Component<ISignInProps> {
     }
     public render() {
         const { email, password } = this.authStore.clientRegisterProps
+        const { authStoreServerError } = this.authStore
         return (
             <div className="auth-container form">
                 <p>Welcome to Messenger</p>
@@ -73,6 +75,11 @@ export default class SignIn extends React.Component<ISignInProps> {
                         />
                     </div>
                 </form>
+                {authStoreServerError && (
+                        <div className="message message--error">
+                            <ServerError error={authStoreServerError}/>
+                        </div>
+                    )}
 
                 {this.requiredDataWarning && (
                     <div className="create-account__warning">

@@ -6,6 +6,7 @@ import { inject, observer } from 'mobx-react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Confirm from '../../Commons/Confirm'
+import ServerError from '../../Commons/ServerError'
 
 export interface IAddContactProps {}
 @inject('getStore')
@@ -46,7 +47,7 @@ export default class AddContact extends React.Component<IAddContactProps> {
     }
     public render() {
         const { email, name, lastname } = this.dialogStore.newContact
-        const { serverError: addContactServerError, isContactReceived } = this.dialogStore
+        const { serverError, isContactReceived } = this.dialogStore
 
         return (
             <>
@@ -83,9 +84,9 @@ export default class AddContact extends React.Component<IAddContactProps> {
                             onReject={this.onClickCloseModal}
                         />
                     )}
-                    {addContactServerError && (
+                    {serverError && (
                         <div className="message message--error">
-                            {addContactServerError}
+                            <ServerError error={serverError}/>
                         </div>
                     )}
                 </div>
