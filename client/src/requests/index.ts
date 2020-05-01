@@ -1,10 +1,6 @@
-import {
-    IUserContacts,
-    IMessage,
-} from './../components/Mainchatpage/Dialog/store/Dialog.interface'
+import { IMessage } from './../components/Mainchatpage/Dialog/store/Dialog.interface'
 import { IUser } from './../components/Auth/store/Auth.interface'
 import { IChangeSettingsProps } from './../components/Mainchatpage/SettingsBar/store/Settings.store'
-import io from 'socket.io-client'
 
 export interface IRegisterResponse {
     success: string
@@ -25,7 +21,7 @@ export interface IAuthResponse {
 }
 
 export interface ISaveProfilePhotoResponse {
-    avatarUrl: any
+    avatarUrl: string
     _id: string
 }
 
@@ -89,9 +85,25 @@ export function authClientReq(token: string) {
     })
 }
 
-export function saveProfilePhotoReq(data: ISaveProfilePhotoResponse) {
-    return new Promise<ISaveProfilePhotoResponse>((resolve, reject) => {
+export function addProfilePhotoReq(data: FormData) {
+    return new Promise<string>((resolve, reject) => {
         return fetch('/api/users/addAvatar', {
+            method: 'POST',
+            body: data,
+        }).then((res) => {
+            res.json().then((parsedRes) => {
+                if (res.status === 200) {
+                    resolve(parsedRes)
+                } else {
+                    reject(parsedRes)
+                }
+            })
+        })
+    })
+}
+export function saveProfilePhotoReq(data: ISaveProfilePhotoResponse) {
+    return new Promise<string>((resolve, reject) => {
+        return fetch('/api/users/saveAvatar', {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -112,7 +124,7 @@ export function saveProfilePhotoReq(data: ISaveProfilePhotoResponse) {
 export function updateClientSettings(data: IChangeSettingsProps) {
     return new Promise<IChangeSettingsProps>((resolve, reject) => {
         return fetch('/api/users/updateClient', {
-            method: 'GET',
+            method: 'POST',
             body: JSON.stringify(data),
             headers: {
                 'Content-Type': 'application/json',
@@ -134,7 +146,7 @@ export interface IContactResponse {
     name: string
     lastname: string
     email: string
-    avatarUrl: string
+    avatarUrl?: string
     hasNewMessage?: boolean
 }
 
@@ -227,6 +239,30 @@ export function findDialogById(dialogId: string) {
             .then((res) => res.json())
             .then((parsedRes: IDialogResponse) => {
                 res(parsedRes)
+            })
+            .catch((err) => {
+                rej(err)
+            })
+    })
+}
+
+export interface IContact {
+    contactId: string
+    dialogId: string
+}
+
+export function deleteContactReq(data: IAddContactProps) {
+    return new Promise<IContact[]>((resolve, rej) => {
+        return fetch('/api/users/deleteContact', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((res) => res.json())
+            .then((parsedRes) => {
+                resolve(parsedRes)
             })
             .catch((err) => {
                 rej(err)

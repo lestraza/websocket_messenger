@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { faSmile } from '@fortawesome/free-regular-svg-icons'
 import AddContact from '../Contacts/AddContact'
-import defaultUserPic from '../../../assets/default-user.png'
+import DialogHeader from './DialogHeader'
 
 export interface IDialogProps {}
 @inject('getStore')
@@ -36,22 +36,9 @@ export default class Dialog extends Component<IDialogProps> {
     public render() {
         const { newMessage } = this.dialogStore
         const { isShowAddContactModal } = this.dialogStore
-        const { name, lastname, avatarUrl } = this.authStore.client
         return (
             <div className="dialog">
-                <div className="dialog__header">
-                    <div className="usercard usercard--small">
-                        <div
-                            className="usercard__pic"
-                            style={{
-                                backgroundImage: `url(${
-                                    avatarUrl ? avatarUrl : defaultUserPic
-                                })`,
-                            }}
-                        ></div>
-                        <div className="usercard__info">{`${name} ${lastname}`}</div>
-                    </div>
-                </div>
+                <DialogHeader />
                 <div className="dialog__screen">
                     <MessageScreenContainer />
                 </div>

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import MainStore, { IGetStore } from '../../../store/MainStore'
+import { IGetStore } from '../../../store/MainStore'
 import { action } from 'mobx'
 import { inject, observer } from 'mobx-react'
 import Message from './Message'
@@ -11,7 +11,6 @@ export interface IMessageScreenContainerProps {}
 export default class MessageScreenContainer extends React.Component<
     IMessageScreenContainerProps
 > {
-    mainStore = this.injected.getStore('mainStore')
     dialogStore = this.injected.getStore('dialogStore')
 
     private get injected() {
@@ -21,7 +20,7 @@ export default class MessageScreenContainer extends React.Component<
     @action.bound
     renderScreenContainers() {
         return this.dialogStore.currentDialog.map((message) => {
-            return <Message message={message} />
+            return <Message message={message} key={message.timeStamp}/>
         })
     }
     public render() {

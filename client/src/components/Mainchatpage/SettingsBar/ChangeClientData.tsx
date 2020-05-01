@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { IGetStore } from '../../../store/MainStore'
-import FormInput from '../../../Commons/FormInput'
+import FormInput from '../../Commons/FormInput'
 import { action } from 'mobx'
 import { IUser } from '../../Auth/store/Auth.interface'
 
@@ -37,7 +37,6 @@ export default class SettingsClientData extends React.Component<
 
     public render() {
         const { name, lastname, email, password } = this.authStore.newSettings
-        console.log(this.authStore.client)
         return (
             <form
                 className="client-settings__data-change-form form"
@@ -78,9 +77,9 @@ export default class SettingsClientData extends React.Component<
                         Email
                     </div>
                     <FormInput
-                        type={'text'}
+                        type={'email'}
                         id={'email'}
-                        //placeholder={'Add your new email'}
+                        placeholder={email}
                         required={false}
                         onChange={this.onChangeSaveValue}
                         className={'client-settings__data-change-prop'}
@@ -93,7 +92,7 @@ export default class SettingsClientData extends React.Component<
                         Password
                     </div>
                     <FormInput
-                        type={'text'}
+                        type={'password'}
                         id={'password'}
                         placeholder={'Add your new password'}
                         required={false}

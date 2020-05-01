@@ -2,9 +2,7 @@ import { SettingsStore } from './../components/Mainchatpage/SettingsBar/store/Se
 import { DialogStore } from './../components/Mainchatpage/Dialog/store/Dialog.store'
 import { AbstractStore } from './Abstract.store'
 import { AuthStore } from './../components/Auth/store/Auth.store'
-import { observable, action } from 'mobx'
-import link from '../images/silvio.jpg'
-
+import { observable, action, computed } from 'mobx'
 export interface IInnerStores {
     dialogStore: DialogStore
     mainStore: MainStore
@@ -19,6 +17,18 @@ export interface IGetStore {
 class MainStore extends AbstractStore {
     @observable
     public clientId: string = ''
+
+    @computed
+    public get env() {
+        return document.location.origin === 'http://localhost:3000' ? 'dev' : 'prod'
+    }
+
+    @computed
+    public get serverUrl() {
+        return this.env === 'dev'
+            ? 'http://localhost:3006'
+            : 'https://mayo-server.herokuapps.com'
+    }
 
     @observable
     private innerStores: IInnerStores = {

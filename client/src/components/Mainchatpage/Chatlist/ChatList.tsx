@@ -21,16 +21,15 @@ export default class ChatList extends React.Component<IChatListProps> {
     }
 
     @action.bound
-    public renderChatListPreview(contacts: IContactResponse[]) {
+    public renderChatListPreview(contacts: IContactResponse[]) {        
         return contacts.map((contact) => {
-            return <ChatPreview contact={contact} />
+            return <ChatPreview contact={contact} key={contact.name + contact.lastname}/>
         })
     }
 
     public render() {
         const { isShowSettingsBar } = this.authStore
         const { contacts } = this.dialogStore
-
         return (
             <div className="chat-list">
                 {isShowSettingsBar ? (

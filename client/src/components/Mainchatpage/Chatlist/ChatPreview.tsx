@@ -3,9 +3,9 @@ import { inject, observer } from 'mobx-react'
 import { IGetStore } from '../../../store/Abstract.store'
 import { IContactResponse } from '../../../requests'
 import { action } from 'mobx'
-import defaultUserPic from '../../../assets/default-user.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
+import AvatarImg from '../../Commons/AvatarImg'
 
 export interface IChatPreviewProps {
     contact: IContactResponse
@@ -21,12 +21,6 @@ export default class ChatPreview extends React.Component<IChatPreviewProps> {
         return this.props as IChatPreviewProps & IGetStore
     }
 
-    private get backgroundImage() {
-        const { avatarUrl } = this.props.contact
-        return {
-            backgroundImage: `url(${avatarUrl ? avatarUrl : defaultUserPic})`,
-        }
-    }
     @action.bound
     public onClickGetHistory() {
         const { getContactHistory } = this.dialogStore
@@ -36,23 +30,24 @@ export default class ChatPreview extends React.Component<IChatPreviewProps> {
 
     public render() {
         const { name, lastname, id, hasNewMessage } = this.props.contact
-        const hasNotification = this.dialogStore.currentContact.id === id
-
+        const { id: currenContactId } = this.dialogStore.currentContact
+        const selectedContactId = currenContactId ? currenContactId : undefined       
+        
         return (
             <div
                 className={`chat-preview ${
                     hasNewMessage ? 'send-notification' : ''
-                }`}
+                } ${id === selectedContactId ? 'selected-contact' : ''}`}
                 onClick={this.onClickGetHistory}
             >
-                <div
+                <AvatarImg
                     className="chat-preview__user-pic"
-                    style={this.backgroundImage}
-                ></div>
+                    user={this.props.contact}
+                />
                 <div className="chat-preview__user">
                     {`${name} ${lastname}`}
                 </div>
-                {hasNotification && (
+                {hasNewMessage && (
                     <div className="chat-preview__notification">
                         <FontAwesomeIcon icon={faEnvelope} />
                     </div>
