@@ -49,8 +49,6 @@ export class AuthStore extends AbstractStore {
     @observable
     public clientId: string = ''
 
-    @observable
-    public serverError: string = ''
 
     @observable
     public isAuthenticatedByToken: boolean = false
@@ -92,7 +90,6 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public registerNewClient() {
-        this.serverError = ''
         return registerClient(this.clientRegisterProps)
             .then(() => {
                 runInAction(() => {
@@ -103,19 +100,19 @@ export class AuthStore extends AbstractStore {
                         password: '',
                         avatarUrl: '',
                     }
+                    this.mainStore.error = ''
 
                 })
             })
             .catch((err) => {
                 runInAction(() => {
-                    this.serverError = err.error
+                    this.mainStore.error = err.error
                 })
             })
     }
 
     @action.bound
     public clientLogin() {
-        this.serverError = ''
         loginClientReq(this.clientRegisterProps)
             .then((res) => {
                 runInAction(() => {
@@ -124,12 +121,13 @@ export class AuthStore extends AbstractStore {
                         password: '',
                     }
                     this.clientId = res.id
+                    this.mainStore.error = ''
                     this.authClient()
                 })
             })
             .catch((err) => {
                 runInAction(() => {
-                    this.serverError = err.error
+                    this.mainStore.error = err.error
                 })
             })
     }
@@ -250,12 +248,13 @@ export class AuthStore extends AbstractStore {
             .then((res) => {
                 runInAction(() => {
                     this.authClient()
+                    this.mainStore.error = ''
                     this.mainStore.success = "Your new settings were successfully updated!"
                 })
             })
             .catch((err) => {
                 runInAction(() => {
-                    this.serverError = err.error
+                    this.mainStore.error = err.error
                 })
             })
     }
