@@ -47,10 +47,8 @@ export class AuthStore extends AbstractStore {
     public isAuthenticated: boolean = false
 
     @observable
-    public isRegistered: boolean = false
-
-    @observable
     public clientId: string = ''
+
 
     @observable
     public isAuthenticatedByToken: boolean = false
@@ -92,7 +90,6 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public registerNewClient() {
-        
         return registerClient(this.clientRegisterProps)
             .then(() => {
                 runInAction(() => {
@@ -103,8 +100,13 @@ export class AuthStore extends AbstractStore {
                         password: '',
                         avatarUrl: '',
                     }
-                    this.isRegistered = true
                     this.mainStore.error = ''
+
+                })
+            })
+            .catch((err) => {
+                runInAction(() => {
+                    this.mainStore.error = err.error
                 })
             })
     }
@@ -124,7 +126,9 @@ export class AuthStore extends AbstractStore {
                 })
             })
             .catch((err) => {
-                this.mainStore.error = err.error
+                runInAction(() => {
+                    this.mainStore.error = err.error
+                })
             })
     }
 
@@ -245,6 +249,7 @@ export class AuthStore extends AbstractStore {
                 runInAction(() => {
                     this.authClient()
                     this.mainStore.error = ''
+                    this.mainStore.success = "Your new settings were successfully updated!"
                 })
             })
             .catch((err) => {

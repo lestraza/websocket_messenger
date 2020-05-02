@@ -4,6 +4,7 @@ import { IGetStore } from '../../../store/MainStore'
 import FormInput from '../../Commons/FormInput'
 import { action } from 'mobx'
 import { IUser } from '../../Auth/store/Auth.interface'
+import Success from '../../Commons/Success'
 
 export interface ISettingsClientDataProps {}
 
@@ -13,9 +14,13 @@ export default class SettingsClientData extends React.Component<
     ISettingsClientDataProps
 > {
     authStore = this.injected.getStore('authStore')
+    mainStore = this.injected.getStore('mainStore')
 
     private get injected() {
         return this.props as ISettingsClientDataProps & IGetStore
+    }
+    componentWillUnmount() {
+        this.mainStore.success = ''
     }
 
     @action.bound
@@ -37,6 +42,7 @@ export default class SettingsClientData extends React.Component<
 
     public render() {
         const { name, lastname, email, password } = this.authStore.newSettings
+        const { success } = this.mainStore
         return (
             <form
                 className="client-settings__data-change-form form"
@@ -101,11 +107,13 @@ export default class SettingsClientData extends React.Component<
                         value={password}
                     />
                 </div>
+
                 <input
                     type="submit"
                     value="Save"
                     className={'button button--primary button--small'}
                 />
+                <Success success={success}/>
             </form>
         )
     }
