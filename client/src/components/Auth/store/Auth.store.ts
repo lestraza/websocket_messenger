@@ -53,9 +53,6 @@ export class AuthStore extends AbstractStore {
     public clientId: string = ''
 
     @observable
-    public authStoreServerError: string = ''
-
-    @observable
     public isAuthenticatedByToken: boolean = false
 
     @observable
@@ -95,7 +92,7 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public registerNewClient() {
-        this.authStoreServerError = ''
+        
         return registerClient(this.clientRegisterProps)
             .then(() => {
                 runInAction(() => {
@@ -107,18 +104,18 @@ export class AuthStore extends AbstractStore {
                         avatarUrl: '',
                     }
                     this.isRegistered = true
+                    this.mainStore.error = ''
                 })
             })
             .catch((err) => {
                 runInAction(() => {
-                    this.authStoreServerError = err.error
+                    this.mainStore.error = err.error
                 })
             })
     }
 
     @action.bound
     public clientLogin() {
-        this.authStoreServerError = ''
         loginClientReq(this.clientRegisterProps)
             .then((res) => {
                 runInAction(() => {
@@ -127,12 +124,12 @@ export class AuthStore extends AbstractStore {
                         password: '',
                     }
                     this.clientId = res.id
+                    this.mainStore.error = ''
                     this.authClient()
                 })
             })
             .catch((err) => {
-                this.authStoreServerError = err.error
-                console.log(this.authStoreServerError);
+                this.mainStore.error = err.error
             })
     }
 
@@ -252,11 +249,12 @@ export class AuthStore extends AbstractStore {
             .then((res) => {
                 runInAction(() => {
                     this.authClient()
+                    this.mainStore.error = ''
                 })
             })
             .catch((err) => {
                 runInAction(() => {
-                    this.authStoreServerError = err.error
+                    this.mainStore.error = err.error
                 })
             })
     }

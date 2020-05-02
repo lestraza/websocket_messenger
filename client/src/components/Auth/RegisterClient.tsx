@@ -7,7 +7,7 @@ import { RouterProps } from 'react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { IUser } from './store/Auth.interface'
-import ServerError from '../Commons/ServerError'
+import Error from '../Commons/Error'
 
 export interface IRegisterClientProps extends RouterProps {}
 
@@ -24,7 +24,7 @@ export default class RegisterClient extends React.Component<
     }
   
     componentWillUnmount() {
-        this.authStore.authStoreServerError = ''
+        this.mainStore.error = ''
     }
     
     @observable
@@ -71,7 +71,7 @@ export default class RegisterClient extends React.Component<
             email,
             password,
         } = this.authStore.clientRegisterProps
-        const { authStoreServerError} = this.authStore
+        const { error} = this.mainStore
         
         return (
             <div className="create-account form">
@@ -145,12 +145,9 @@ export default class RegisterClient extends React.Component<
                         Please add all reqiured data
                     </div>
                 )}
-                {authStoreServerError && (
-                        <div className="message message--error">
-                            <ServerError error={authStoreServerError}/>
-                        </div>
-                    )}
-                {this.successfullRegisterNotification && !authStoreServerError ? (
+                <Error isDisplaying={!!error} error={error}/>
+              
+                {this.successfullRegisterNotification && !error ? (
                     <div>
                         You have successfully registered! <br />
                         To continue working in the application please
