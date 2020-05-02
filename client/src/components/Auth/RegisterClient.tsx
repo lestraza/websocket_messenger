@@ -22,7 +22,11 @@ export default class RegisterClient extends React.Component<
     private get injected() {
         return this.props as IRegisterClientProps & IGetStore
     }
-
+  
+    componentWillUnmount() {
+        this.authStore.authStoreServerError = ''
+    }
+    
     @observable
     requiredDataWarning: boolean = false
 
@@ -68,6 +72,7 @@ export default class RegisterClient extends React.Component<
             password,
         } = this.authStore.clientRegisterProps
         const { authStoreServerError} = this.authStore
+        
         return (
             <div className="create-account form">
                 <Link
