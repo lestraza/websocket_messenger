@@ -2,8 +2,7 @@ import * as React from 'react'
 import { IGetStore } from '../../store/Abstract.store'
 import { inject, observer } from 'mobx-react'
 
-export interface IErrorProps {
-    isDisplaying: boolean
+export interface IErrorProps {    
     error: string
 }
 
@@ -19,7 +18,7 @@ export default class Error extends React.Component<IErrorProps> {
     }
     public render() {
         return (
-            this.props.isDisplaying && (
+            this.props.error && (
                 <div className="message message--error">{this.props.error}</div>
             )
         )
