@@ -44,6 +44,9 @@ export class AuthStore extends AbstractStore {
     }
 
     @observable
+    public authStoreServerSuccess: string = ''
+
+    @observable
     public isAuthenticated: boolean = false
 
     @observable
@@ -253,6 +256,7 @@ export class AuthStore extends AbstractStore {
             .then((res) => {
                 runInAction(() => {
                     this.authClient()
+                    this.authStoreServerSuccess = "Your new settings were successfully updated!"
                 })
             })
             .catch((err) => {
