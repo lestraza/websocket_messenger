@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { IGetStore } from '../../store/MainStore'
-import { action, observable } from 'mobx'
+import { action, observable, runInAction } from 'mobx'
 import { Link } from 'react-router-dom'
 import { RouterProps } from 'react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -27,8 +27,6 @@ export default class RegisterClient extends React.Component<
         this.mainStore.error = ''
     }
     
-    @observable
-    requiredDataWarning: boolean = false
 
     @observable
     successfullRegisterNotification: boolean = false
@@ -54,13 +52,18 @@ export default class RegisterClient extends React.Component<
             password,
         } = this.authStore.clientRegisterProps
         if (name && lastname && email && password) {
-            this.requiredDataWarning = false
-            registerNewClient().then(() => {
+            registerNewClient()
+            .then(() => {
                 this.props.history.push('/signin')
+                this.successfullRegisterNotification = true
             })
-            this.successfullRegisterNotification = true
+            .catch((err) => {
+                runInAction(() => {
+                    this.mainStore.error = err.error
+                })
+            }) 
         } else {
-            this.requiredDataWarning = true
+            this.mainStore.error = 'Please add all reqiured data!'
         }
     }
 
@@ -140,11 +143,7 @@ export default class RegisterClient extends React.Component<
                         />
                     </div>
                 </form>
-                {this.requiredDataWarning && (
-                    <div className="create-account__warning">
-                        Please add all reqiured data
-                    </div>
-                )}
+              
                 <Error isDisplaying={!!error} error={error}/>
               
                 {this.successfullRegisterNotification && !error ? (

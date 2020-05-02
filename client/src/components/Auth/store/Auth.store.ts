@@ -107,11 +107,6 @@ export class AuthStore extends AbstractStore {
                     this.mainStore.error = ''
                 })
             })
-            .catch((err) => {
-                runInAction(() => {
-                    this.mainStore.error = err.error
-                })
-            })
     }
 
     @action.bound
