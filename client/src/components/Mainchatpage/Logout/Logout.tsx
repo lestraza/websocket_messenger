@@ -35,7 +35,7 @@ export default class Logout extends React.Component<ILogoutProps> {
     }
     public render() {
         return (
-            <div className="logout__container">
+            <div className="logout-container">
                 <div onClick={this.onClickShowConfirm}>
                     <FontAwesomeIcon icon={faSignOutAlt} size={'lg'} />
                 </div>
