@@ -132,6 +132,22 @@ h1 {
     background-color: #ededed;
 }
 
+.action-button {
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    color: #8a9aa2;
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.08);
+    }
+}
+
 .chat-list {
     width: 30%;
     border-right: 1px solid #ededed;
@@ -145,19 +161,7 @@ h1 {
     &__header-settings-button,
     &__header-add-contact,
     .logout-container {
-        width: 50px;
-        height: 50px;
-        padding: 10px;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: all 0.3s ease;
-        color: #8a9aa2;
-
-        &:hover {
-            background: rgba(0, 0, 0, 0.08);
-        }
+        @extend .action-button;
     }
 
     &__header-add-contact {
@@ -266,12 +270,14 @@ h1 {
         padding: 17px 25px 17px 17px;
         display: flex;
         justify-content: space-between;
+        position: relative;
     }
     &__header-menu {
-        cursor: pointer;
-        
+        @extend .action-button;
+        margin-top: -18px;
+        margin-right: -24px;
     }
-    
+
     &__screen {
         overflow: auto;
         height: calc(100% - 165px);
@@ -511,6 +517,48 @@ h1 {
     &--error {
         background: #ffe6ea;
         border: 1px solid #ffb7af;
+    }
+}
+
+.dialog-menu-modal {
+    position: absolute;
+    background: #fff;
+    box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.2);
+    right: 0px;
+    top: 70px;
+
+    &__item {
+        font-size: 17px;
+        padding: 20px;
+        border-bottom: 1px solid #ededed;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #fbfbfb;
+        }
+    }
+}
+
+.confirm-dialog {
+    position: fixed;
+    background: #fff;
+    box-shadow: 0 0 25px 3px rgba(0, 0, 0, 0.2);
+    animation: popup 0.4s ease forwards;
+    max-width: 300px;
+    left: calc(50% - 150px);
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px 25px;
+        background: #e4ebf1;
+        font-size: 17px;
+    }
+
+    &__form {
+        padding: 30px;
+        display: flex;
+        justify-content: space-around;
     }
 }
 
