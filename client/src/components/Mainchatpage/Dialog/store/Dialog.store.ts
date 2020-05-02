@@ -36,7 +36,7 @@ export class DialogStore extends AbstractStore {
     isShowAddContactModal: boolean = false
 
     @observable
-    serverError: string = ''
+    dialogStoreServerError: string = ''
 
     @observable
     public currentDialog: IMessage[] = []
@@ -66,7 +66,7 @@ export class DialogStore extends AbstractStore {
         if (this.isShowAddContactModal) {
             this.isShowAddContactModal = false
             this.newContact = { ...initContact }
-            this.serverError = ''
+            this.mainStore.error = ''
         } else {
             this.isShowAddContactModal = true
         }
@@ -79,9 +79,9 @@ export class DialogStore extends AbstractStore {
         )
         this.newContact.email = email.trim()
         if (this.isAlreadyInContacts) {
-            this.serverError = 'Contact already added'
+            this.mainStore.error = 'Contact already added'
         } else {
-            this.serverError = ''
+            this.mainStore.error = ''
         }
     }
 
@@ -97,12 +97,12 @@ export class DialogStore extends AbstractStore {
                         this.newContact.name = res.name
                         this.newContact.lastname = res.lastname
                         this.isShowAddContactModal = true
-                        this.serverError =''
+                        this.mainStore.error = ''
                         this.isContactReceived = true
                     })
                 })
                 .catch((err) => {
-                    this.serverError = err.error
+                    this.mainStore.error = err.error
                 })
         }
     }
@@ -120,11 +120,11 @@ export class DialogStore extends AbstractStore {
                 runInAction(() => {
                     this.contacts = contacts
                     this.newContact = { ...initContact }
-                    this.serverError = ''
+                    this.mainStore.error = ''
                 })
             })
             .catch((err) => {
-                this.serverError = err.error
+                this.mainStore.error = err.error
             })
         }
     }
@@ -143,11 +143,12 @@ export class DialogStore extends AbstractStore {
                     this.newContact = {...initContact}
                     this.isContactReceived = false
                     this.contacts = [...this.contacts, contact]
+                    this.mainStore.error = ''
                 })
             })
             .catch((err) => {
                 this.isContactReceived = false
-                this.serverError = err.error
+                this.mainStore.error = err.error
             })
     }
 
@@ -178,12 +179,13 @@ export class DialogStore extends AbstractStore {
                     this.contacts.forEach((contact) => {
                         if (contact.id === contactId) {
                             contact.hasNewMessage = false
+                            this.mainStore.error = ''
                         }
                     })
                 })
             })
             .catch((err) => {
-                this.serverError = err.error
+                this.mainStore.error = err.error
             })
         }
     }
@@ -238,11 +240,11 @@ export class DialogStore extends AbstractStore {
                 this.isShowDialogMenu = false
                 this.authStore.client.contacts = [...res]
                 this.currentContact = {...initContact}
-                this.serverError = ''
+                this.mainStore.error = ''
             })
         })
         .catch((err) => {
-            this.serverError = err.error
+            this.mainStore.error = err.error
         })
     }
 }

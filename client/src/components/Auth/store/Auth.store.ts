@@ -43,8 +43,6 @@ export class AuthStore extends AbstractStore {
         isOnline: false,
     }
 
-    @observable
-    public authStoreServerSuccess: string = ''
 
     @observable
     public isAuthenticated: boolean = false
@@ -54,9 +52,6 @@ export class AuthStore extends AbstractStore {
 
     @observable
     public clientId: string = ''
-
-    @observable
-    public serverError: string = ''
 
     @observable
     public isAuthenticatedByToken: boolean = false
@@ -98,7 +93,7 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public registerNewClient() {
-        this.serverError = ''
+        
         return registerClient(this.clientRegisterProps)
             .then(() => {
                 runInAction(() => {
@@ -110,18 +105,13 @@ export class AuthStore extends AbstractStore {
                         avatarUrl: '',
                     }
                     this.isRegistered = true
-                })
-            })
-            .catch((err) => {
-                runInAction(() => {
-                    this.serverError = err.error
+                    this.mainStore.error = ''
                 })
             })
     }
 
     @action.bound
     public clientLogin() {
-        this.serverError = ''
         loginClientReq(this.clientRegisterProps)
             .then((res) => {
                 runInAction(() => {
@@ -130,13 +120,12 @@ export class AuthStore extends AbstractStore {
                         password: '',
                     }
                     this.clientId = res.id
+                    this.mainStore.error = ''
                     this.authClient()
                 })
             })
             .catch((err) => {
-                runInAction(() => {
-                    this.serverError = err.error
-                })
+                this.mainStore.error = err.error
             })
     }
 
@@ -256,12 +245,12 @@ export class AuthStore extends AbstractStore {
             .then((res) => {
                 runInAction(() => {
                     this.authClient()
-                    this.authStoreServerSuccess = "Your new settings were successfully updated!"
+                    this.mainStore.error = ''
                 })
             })
             .catch((err) => {
                 runInAction(() => {
-                    this.serverError = err.error
+                    this.mainStore.error = err.error
                 })
             })
     }

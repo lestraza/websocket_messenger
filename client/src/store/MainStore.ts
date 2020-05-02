@@ -18,6 +18,9 @@ class MainStore extends AbstractStore {
     @observable
     public clientId: string = ''
 
+    @observable
+    public error: string = ''
+
     @computed
     public get env() {
         return document.location.origin === 'http://localhost:3000' ? 'dev' : 'prod'
