@@ -90,7 +90,7 @@ export default class AddContact extends React.Component<IAddContactProps> {
                             onReject={this.onClickCloseModal}
                         />
                     )}
-                    <Error isDisplaying={!!error} error={error}/>
+                    <Error error={error}/>
                 </div>
             </>
         )

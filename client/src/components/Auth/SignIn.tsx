@@ -75,7 +75,7 @@ export default class SignIn extends React.Component<ISignInProps> {
                         />
                     </div>
                 </form>
-                <Error isDisplaying={!!error} error={error}/>
+                <Error error={error}/>
 
                 <div className="create-account">
                     New to messenger?&nbsp;

@@ -144,7 +144,7 @@ export default class RegisterClient extends React.Component<
                     </div>
                 </form>
               
-                <Error isDisplaying={!!error} error={error}/>
+                <Error error={error}/>
               
                 {this.successfullRegisterNotification && !error ? (
                     <div>
