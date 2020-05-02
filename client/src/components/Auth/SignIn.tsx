@@ -5,6 +5,7 @@ import { IGetStore } from '../../store/MainStore'
 import { action, observable } from 'mobx'
 import { IUser } from './store/Auth.interface'
 import Error from '../Commons/Error'
+import Success from '../Commons/Success'
 
 export interface ISignInProps {}
 @inject('getStore')
@@ -44,7 +45,7 @@ export default class SignIn extends React.Component<ISignInProps> {
     }
     public render() {
         const { email, password } = this.authStore.clientRegisterProps
-        const { error} = this.mainStore
+        const { error, success} = this.mainStore
         return (
             <div className="auth-container form">
                 <p>Welcome to Messenger</p>
@@ -76,6 +77,7 @@ export default class SignIn extends React.Component<ISignInProps> {
                     </div>
                 </form>
                 <Error error={error}/>
+                <Success success={success} />
 
                 <div className="create-account">
                     New to messenger?&nbsp;

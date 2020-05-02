@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { IUser } from './store/Auth.interface'
 import Error from '../Commons/Error'
+import Success from '../Commons/Success'
 
 export interface IRegisterClientProps extends RouterProps {}
 
@@ -27,10 +28,6 @@ export default class RegisterClient extends React.Component<
         this.mainStore.error = ''
     }
     
-
-    @observable
-    successfullRegisterNotification: boolean = false
-
     @action.bound
     public onChangeSaveValue(e: React.ChangeEvent<HTMLInputElement>) {
         const { saveInputValueRegisterForm } = this.authStore
@@ -55,7 +52,7 @@ export default class RegisterClient extends React.Component<
             registerNewClient()
             .then(() => {
                 this.props.history.push('/signin')
-                this.successfullRegisterNotification = true
+                this.mainStore.success = 'You have successfully registered!'
             })
             .catch((err) => {
                 runInAction(() => {
@@ -74,7 +71,7 @@ export default class RegisterClient extends React.Component<
             email,
             password,
         } = this.authStore.clientRegisterProps
-        const { error} = this.mainStore
+        const { error, success} = this.mainStore
         
         return (
             <div className="create-account form">
@@ -146,13 +143,7 @@ export default class RegisterClient extends React.Component<
               
                 <Error error={error}/>
               
-                {this.successfullRegisterNotification && !error ? (
-                    <div>
-                        You have successfully registered! <br />
-                        To continue working in the application please
-                        <Link to={'/signin'}> sign in</Link>
-                    </div>
-                ) : null}
+                <Success success={success} />
                 <div className="font-small">
                     By creating an account, you agree to the Terms of Service.
                     For more information about Messenger's privacy practices,
