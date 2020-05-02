@@ -17,9 +17,6 @@ export default class SignIn extends React.Component<ISignInProps> {
         return this.props as ISignInProps & IGetStore
     }
 
-    @observable
-    requiredDataWarning: boolean = false
-
     componentWillUnmount() {
         this.mainStore.error = ''
     }
@@ -40,10 +37,9 @@ export default class SignIn extends React.Component<ISignInProps> {
         const { clientLogin } = this.authStore
         const { email, password } = this.authStore.clientRegisterProps
         if (email && password) {
-            this.requiredDataWarning = false
             clientLogin()
         } else {
-            this.requiredDataWarning = true
+            this.mainStore.error = 'Please add all reqiured data!'
         }
     }
     public render() {
@@ -80,12 +76,6 @@ export default class SignIn extends React.Component<ISignInProps> {
                     </div>
                 </form>
                 <Error isDisplaying={!!error} error={error}/>
-              
-                {this.requiredDataWarning && (
-                    <div className="create-account__warning">
-                        Please add all reqiured data
-                    </div>
-                )}
 
                 <div className="create-account">
                     New to messenger?&nbsp;
