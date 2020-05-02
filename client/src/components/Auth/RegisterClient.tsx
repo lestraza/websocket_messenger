@@ -1,12 +1,13 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { IGetStore } from '../../store/MainStore'
-import { action, observable } from 'mobx'
+import { action, observable, runInAction } from 'mobx'
 import { Link } from 'react-router-dom'
 import { RouterProps } from 'react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { IUser } from './store/Auth.interface'
+import Error from '../Commons/Error'
 
 export interface IRegisterClientProps extends RouterProps {}
 
@@ -21,9 +22,11 @@ export default class RegisterClient extends React.Component<
     private get injected() {
         return this.props as IRegisterClientProps & IGetStore
     }
-
-    @observable
-    requiredDataWarning: boolean = false
+  
+    componentWillUnmount() {
+        this.mainStore.error = ''
+    }
+    
 
     @observable
     successfullRegisterNotification: boolean = false
@@ -49,13 +52,18 @@ export default class RegisterClient extends React.Component<
             password,
         } = this.authStore.clientRegisterProps
         if (name && lastname && email && password) {
-            this.requiredDataWarning = false
-            registerNewClient().then(() => {
+            registerNewClient()
+            .then(() => {
                 this.props.history.push('/signin')
+                this.successfullRegisterNotification = true
             })
-            this.successfullRegisterNotification = true
+            .catch((err) => {
+                runInAction(() => {
+                    this.mainStore.error = err.error
+                })
+            }) 
         } else {
-            this.requiredDataWarning = true
+            this.mainStore.error = 'Please add all reqiured data!'
         }
     }
 
@@ -66,7 +74,8 @@ export default class RegisterClient extends React.Component<
             email,
             password,
         } = this.authStore.clientRegisterProps
-        const { serverError} = this.authStore
+        const { error} = this.mainStore
+        
         return (
             <div className="create-account form">
                 <Link
@@ -134,13 +143,10 @@ export default class RegisterClient extends React.Component<
                         />
                     </div>
                 </form>
-                {this.requiredDataWarning && (
-                    <div className="create-account__warning">
-                        Please add all reqiured data
-                    </div>
-                )}
-                {serverError && <div>{serverError}</div>}
-                {this.successfullRegisterNotification && !serverError ? (
+              
+                <Error error={error}/>
+              
+                {this.successfullRegisterNotification && !error ? (
                     <div>
                         You have successfully registered! <br />
                         To continue working in the application please

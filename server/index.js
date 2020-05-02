@@ -47,7 +47,7 @@ app.post('/api/users/register', (req, res) => {
             throwError(
                 res,
                 403,
-                'A user with this email already exists. Try other email again.'
+                'A user with this email already exists. Try other email!'
             )
         } else {
             newUser.save((err, doc) => {
