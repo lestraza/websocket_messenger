@@ -42,81 +42,79 @@ export default class SettingsClientData extends React.Component<
         const { name, lastname, email, password } = this.authStore.newSettings
         const { authStoreServerSuccess } = this.authStore
         return (
-            <>
-                <form
-                    className="client-settings__data-change-form form"
-                    onSubmit={this.onSubmitForm}
-                >
-                    <div className="form-row">
-                        <div className="client-settings__data-change-title form-label">
-                            Name
-                        </div>
-                        <FormInput
-                            type={'text'}
-                            id={'name'}
-                            placeholder={name}
-                            required={false}
-                            onChange={this.onChangeSaveValue}
-                            className={'client-settings__data-change-prop'}
-                            value={name}
-                        />
+            <form
+                className="client-settings__data-change-form form"
+                onSubmit={this.onSubmitForm}
+            >
+                <div className="form-row">
+                    <div className="client-settings__data-change-title form-label">
+                        Name
                     </div>
-
-                    <div className="form-row">
-                        <div className="client-settings__data-change-title form-label">
-                            Lastname
-                        </div>
-                        <FormInput
-                            type={'text'}
-                            id={'lastname'}
-                            placeholder={lastname}
-                            required={false}
-                            onChange={this.onChangeSaveValue}
-                            className={'client-settings__data-change-prop'}
-                            value={lastname}
-                        />
-                    </div>
-
-                    <div className="form-row">
-                        <div className="client-settings__data-change-title form-label">
-                            Email
-                        </div>
-                        <FormInput
-                            type={'email'}
-                            id={'email'}
-                            placeholder={email}
-                            required={false}
-                            onChange={this.onChangeSaveValue}
-                            className={'client-settings__data-change-prop'}
-                            value={email}
-                        />
-                    </div>
-
-                    <div className="form-row">
-                        <div className="client-settings__data-change-title form-label">
-                            Password
-                        </div>
-                        <FormInput
-                            type={'password'}
-                            id={'password'}
-                            placeholder={'Add your new password'}
-                            required={false}
-                            onChange={this.onChangeSaveValue}
-                            className={'client-settings__data-change-prop'}
-                            value={password}
-                        />
-                    </div>
-
-                    <input
-                        type="submit"
-                        value="Save"
-                        className={'button button--primary button--small'}
+                    <FormInput
+                        type={'text'}
+                        id={'name'}
+                        placeholder={name}
+                        required={false}
+                        onChange={this.onChangeSaveValue}
+                        className={'client-settings__data-change-prop'}
+                        value={name}
                     />
-                    {authStoreServerSuccess && (
-                        <div className="message">{authStoreServerSuccess}</div>
-                    )}
-                </form>
-            </>
+                </div>
+
+                <div className="form-row">
+                    <div className="client-settings__data-change-title form-label">
+                        Lastname
+                    </div>
+                    <FormInput
+                        type={'text'}
+                        id={'lastname'}
+                        placeholder={lastname}
+                        required={false}
+                        onChange={this.onChangeSaveValue}
+                        className={'client-settings__data-change-prop'}
+                        value={lastname}
+                    />
+                </div>
+
+                <div className="form-row">
+                    <div className="client-settings__data-change-title form-label">
+                        Email
+                    </div>
+                    <FormInput
+                        type={'email'}
+                        id={'email'}
+                        placeholder={email}
+                        required={false}
+                        onChange={this.onChangeSaveValue}
+                        className={'client-settings__data-change-prop'}
+                        value={email}
+                    />
+                </div>
+
+                <div className="form-row">
+                    <div className="client-settings__data-change-title form-label">
+                        Password
+                    </div>
+                    <FormInput
+                        type={'password'}
+                        id={'password'}
+                        placeholder={'Add your new password'}
+                        required={false}
+                        onChange={this.onChangeSaveValue}
+                        className={'client-settings__data-change-prop'}
+                        value={password}
+                    />
+                </div>
+
+                <input
+                    type="submit"
+                    value="Save"
+                    className={'button button--primary button--small'}
+                />
+                {authStoreServerSuccess && (
+                    <div className="message">{authStoreServerSuccess}</div>
+                )}
+            </form>
         )
     }
 }
