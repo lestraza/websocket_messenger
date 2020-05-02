@@ -7,7 +7,7 @@ import { inject, observer } from 'mobx-react'
 import MainChatPage from './components/Mainchatpage/MainChatPage'
 import RegisterClient from './components/Auth/RegisterClient'
 import { LoaderSpinner } from './components/Commons/LoaderSpinner'
-import ServerError from './components/Commons/ServerError'
+import Error from './components/Commons/Error'
 
 export interface IAppProps {}
 @inject('getStore')
