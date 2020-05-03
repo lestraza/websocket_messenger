@@ -3,7 +3,7 @@ import { IGetStore } from '../../../store/MainStore'
 import { inject, observer } from 'mobx-react'
 import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { action, computed } from 'mobx'
+import { action } from 'mobx'
 import AvatarImg from '../../Commons/AvatarImg'
 
 export interface IClientPicSettingProps {}

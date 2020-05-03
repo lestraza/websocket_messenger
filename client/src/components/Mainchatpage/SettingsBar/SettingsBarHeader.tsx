@@ -1,10 +1,9 @@
 import * as React from 'react'
 import { IGetStore } from '../../../store/MainStore'
-import { action, observable } from 'mobx'
+import { action } from 'mobx'
 import { inject, observer } from 'mobx-react'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import DeleteAccountModal from './DeleteAccountModal'
 
 export interface ISettingsBarHeaderProps {}
 

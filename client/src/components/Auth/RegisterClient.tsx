@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { IGetStore } from '../../store/MainStore'
-import { action, observable, runInAction } from 'mobx'
+import { action, runInAction } from 'mobx'
 import { Link } from 'react-router-dom'
 import { RouterProps } from 'react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -146,8 +146,8 @@ export default class RegisterClient extends React.Component<
                 <Success success={success} />
                 <div className="font-small">
                     By creating an account, you agree to the Terms of Service.
-                    For more information about Messenger's privacy practices,
-                    see the Messenger Privacy Statement. We'll occasionally send
+                    For more information about Messenger&apos;s privacy practices,
+                    see the Messenger Privacy Statement. We&apos;ll occasionally send
                     you account-related emails.
                 </div>
             </div>
