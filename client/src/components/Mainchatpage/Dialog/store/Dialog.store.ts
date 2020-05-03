@@ -80,6 +80,8 @@ export class DialogStore extends AbstractStore {
         this.newContact.email = email.trim()
         if (this.isAlreadyInContacts) {
             this.mainStore.error = 'Contact already added'
+        } else if (email === this.authStore.client.email) {
+            this.mainStore.error = 'Try other email!'
         } else {
             this.mainStore.error = ''
         }
@@ -116,16 +118,17 @@ export class DialogStore extends AbstractStore {
                 contacts.map((contact) => {
                     return getContactById(contact.contactId)
                 })
-            ).then((contacts) => {
-                runInAction(() => {
-                    this.contacts = contacts
-                    this.newContact = { ...initContact }
-                    this.mainStore.error = ''
+            )
+                .then((contacts) => {
+                    runInAction(() => {
+                        this.contacts = contacts
+                        this.newContact = { ...initContact }
+                        this.mainStore.error = ''
+                    })
                 })
-            })
-            .catch((err) => {
-                this.mainStore.error = err.error
-            })
+                .catch((err) => {
+                    this.mainStore.error = err.error
+                })
         }
     }
 
@@ -138,9 +141,9 @@ export class DialogStore extends AbstractStore {
         addContactReq(data)
             .then((contact) => {
                 runInAction(() => {
-                    this.currentContact = {...contact}
+                    this.currentContact = { ...contact }
                     this.isShowAddContactModal = false
-                    this.newContact = {...initContact}
+                    this.newContact = { ...initContact }
                     this.isContactReceived = false
                     this.contacts = [...this.contacts, contact]
                     this.mainStore.error = ''
@@ -172,21 +175,21 @@ export class DialogStore extends AbstractStore {
             this.currentContact.id = contactId
             this.currentDialogId = dialogId
             findDialogById(dialogId)
-            .then((dialog) => {
-                runInAction(() => {
-                    socket?.emit('joinChat', dialogId)
-                    this.currentDialog = [...(dialog.messages || [])]
-                    this.contacts.forEach((contact) => {
-                        if (contact.id === contactId) {
-                            contact.hasNewMessage = false
-                            this.mainStore.error = ''
-                        }
+                .then((dialog) => {
+                    runInAction(() => {
+                        socket?.emit('joinChat', dialogId)
+                        this.currentDialog = [...(dialog.messages || [])]
+                        this.contacts.forEach((contact) => {
+                            if (contact.id === contactId) {
+                                contact.hasNewMessage = false
+                                this.mainStore.error = ''
+                            }
+                        })
                     })
                 })
-            })
-            .catch((err) => {
-                this.mainStore.error = err.error
-            })
+                .catch((err) => {
+                    this.mainStore.error = err.error
+                })
         }
     }
 
@@ -231,20 +234,20 @@ export class DialogStore extends AbstractStore {
             contactId: this.currentContact.id || '',
         }
         deleteContactReq(data)
-        .then((res) => {
-            runInAction(() => {
-                this.contacts = this.contacts.filter((contact) => {
-                    return contact.id !== data.contactId
+            .then((res) => {
+                runInAction(() => {
+                    this.contacts = this.contacts.filter((contact) => {
+                        return contact.id !== data.contactId
+                    })
+                    this.currentDialog = []
+                    this.isShowDialogMenu = false
+                    this.authStore.client.contacts = [...res]
+                    this.currentContact = { ...initContact }
+                    this.mainStore.error = ''
                 })
-                this.currentDialog = []
-                this.isShowDialogMenu = false
-                this.authStore.client.contacts = [...res]
-                this.currentContact = {...initContact}
-                this.mainStore.error = ''
             })
-        })
-        .catch((err) => {
-            this.mainStore.error = err.error
-        })
+            .catch((err) => {
+                this.mainStore.error = err.error
+            })
     }
 }

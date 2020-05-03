@@ -51,7 +51,7 @@ export default class AddContact extends React.Component<IAddContactProps> {
     }
     public render() {
         const { email, name, lastname } = this.dialogStore.newContact
-        const { isContactReceived} = this.dialogStore
+        const { isContactReceived } = this.dialogStore
         const { error } = this.mainStore
 
         return (
@@ -89,7 +89,7 @@ export default class AddContact extends React.Component<IAddContactProps> {
                             onReject={this.onClickCloseModal}
                         />
                     )}
-                    <Error error={error}/>
+                    <Error error={error} />
                 </div>
             </>
         )
