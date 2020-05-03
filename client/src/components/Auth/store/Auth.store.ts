@@ -176,7 +176,9 @@ export class AuthStore extends AbstractStore {
                     })
                 })
         } else {
-            return Promise.reject()
+            this.isAuthenticated = false
+            this.socket?.emit('disconnect')
+            return Promise.resolve()
         }
     }
 
