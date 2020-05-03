@@ -4,8 +4,8 @@ module.exports = {
         es6: true,
     },
     extends: [
-        'eslint:recommended',
         'plugin:react/recommended',
+        'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/eslint-recommended',
     ],
     globals: {
@@ -22,6 +22,14 @@ module.exports = {
     },
     plugins: ['react', '@typescript-eslint'],
     rules: {
-        semi: ['error', 'always'],
+        'no-unused-vars': 'error',
+        'no-extra-semi': 'warn',
+        'eqeqeq': 'warn',
+        '@typescript-eslint/no-empty-interface': 'off',
+        '@typescript-eslint/interface-name-prefix': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/member-delimiter-style': 'off',
+        '@typescript-eslint/no-inferrable-types': 'off',
+        '@typescript-eslint/no-var-requires': 'off',
     },
 }
