@@ -547,6 +547,8 @@ h1 {
     animation: popup 0.4s ease forwards;
     max-width: 300px;
     left: calc(50% - 150px);
+    top: 30%;
+    z-index: 100;
 
     &__header {
         display: flex;
