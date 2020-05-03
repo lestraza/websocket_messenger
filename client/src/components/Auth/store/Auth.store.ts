@@ -238,6 +238,11 @@ export class AuthStore extends AbstractStore {
                     })
                    
             })
+            .catch((err) => {
+                runInAction(() => {
+                    this.mainStore.error = err.error
+                })
+            })
         }
     }
 
