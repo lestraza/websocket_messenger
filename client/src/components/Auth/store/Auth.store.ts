@@ -230,22 +230,13 @@ export class AuthStore extends AbstractStore {
                     avatarUrl,
                     _id,
                 }
-                saveProfilePhotoReq(data)
+                return saveProfilePhotoReq(data)
                     .then(() => {
                         runInAction(() => {
                             this.client.avatarUrl = avatarUrl
                         })
                     })
-                    .catch((err) => {
-                        runInAction(() => {
-                            this.mainStore.error = err.error
-                        })
-                    })
-            })
-            .catch((err) => {
-                runInAction(() => {
-                    this.mainStore.error = err.error
-                })
+                   
             })
         }
     }

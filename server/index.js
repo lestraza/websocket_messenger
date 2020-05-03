@@ -6,9 +6,6 @@ const path = require('path')
 const uuid = require('uuid').v1
 const fs = require('fs')
 
-const { promisify } = require('util')
-const unlinkAsync = promisify(fs.unlink)
-
 const multer = require('multer')
 
 require('dotenv').config()

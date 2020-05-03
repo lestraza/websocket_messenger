@@ -1,6 +1,6 @@
 import * as React from 'react'
 import FormInput from '../../Commons/FormInput'
-import { action, observable } from 'mobx'
+import { action } from 'mobx'
 import { IGetStore } from '../../../store/MainStore'
 import { inject, observer } from 'mobx-react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -39,8 +39,7 @@ export default class AddContact extends React.Component<IAddContactProps> {
 
     @action.bound
     public onClickAddContact() {
-        let { isContactReceived } = this.dialogStore
-        isContactReceived = false
+        this.dialogStore.isContactReceived = false
         const { addContact } = this.dialogStore
         addContact()
     }
