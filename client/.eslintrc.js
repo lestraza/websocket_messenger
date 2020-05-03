@@ -23,7 +23,7 @@ module.exports = {
     plugins: ['react', '@typescript-eslint'],
     rules: {
         'no-unused-vars': 'error',
-        'no-extra-semi': 'warn',
+        'no-extra-semi': 'off',
         'eqeqeq': 'warn',
         '@typescript-eslint/no-empty-interface': 'off',
         '@typescript-eslint/interface-name-prefix': 'off',

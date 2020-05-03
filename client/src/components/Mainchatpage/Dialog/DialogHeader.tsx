@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { IGetStore } from '../../../store/Abstract.store'
 import { observer, inject } from 'mobx-react'
-import defaultUserPic from '../../../assets/default-user.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { action } from 'mobx'

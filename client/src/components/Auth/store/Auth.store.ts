@@ -49,7 +49,6 @@ export class AuthStore extends AbstractStore {
     @observable
     public clientId: string = ''
 
-
     @observable
     public isAuthenticatedByToken: boolean = false
 
@@ -101,7 +100,6 @@ export class AuthStore extends AbstractStore {
                         avatarUrl: '',
                     }
                     this.mainStore.error = ''
-
                 })
             })
             .catch((err) => {
@@ -152,30 +150,34 @@ export class AuthStore extends AbstractStore {
     @action.bound
     public authClient() {
         const cookieName: string = 'user_token='
-        const token: any = this.getCookie(cookieName)
-        return authClientReq(token)
-            .then((res) => {
-                runInAction(() => {
-                    this.client = {
-                        id: res.id,
-                        name: res.name,
-                        lastname: res.lastname,
-                        email: res.email,
-                        avatarUrl: res.avatarUrl,
-                        contacts: res.contacts,
-                        isOnline: res.isOnline,
-                    }
-                    this.isAuthenticated = true
-                    this.dialogStore.getContactsById()
-                    this.connectSocket()
+        const token: string | undefined = this.getCookie(cookieName)
+        if (token) {
+            return authClientReq(token)
+                .then((res) => {
+                    runInAction(() => {
+                        this.client = {
+                            id: res.id,
+                            name: res.name,
+                            lastname: res.lastname,
+                            email: res.email,
+                            avatarUrl: res.avatarUrl,
+                            contacts: res.contacts,
+                            isOnline: res.isOnline,
+                        }
+                        this.isAuthenticated = true
+                        this.dialogStore.getContactsById()
+                        this.connectSocket()
+                    })
                 })
-            })
-            .catch((err) => {
-                runInAction(() => {
-                    this.isAuthenticated = false
-                    this.socket?.emit('disconnect')
+                .catch(() => {
+                    runInAction(() => {
+                        this.isAuthenticated = false
+                        this.socket?.emit('disconnect')
+                    })
                 })
-            })
+        } else {
+            return Promise.reject()
+        }
     }
 
     @action.bound
@@ -201,7 +203,7 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public logout() {
-        let cookieName: string = 'user_token='
+        const cookieName: string = 'user_token='
         document.cookie = `${cookieName}; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`
         this.authClient()
     }
@@ -216,24 +218,26 @@ export class AuthStore extends AbstractStore {
     }
 
     @action.bound
-    public changeProfilePhoto(target: any) {
+    public changeProfilePhoto(target: HTMLInputElement) {
         const data = new FormData()
-        data.append('file', target.files[0])
-
-        addProfilePhotoReq(data).then((avatarUrl) => {
-            const _id = this.client.id || ''
-            const data: ISaveProfilePhotoResponse = {
-                avatarUrl,
-                _id,
-            }
-            saveProfilePhotoReq(data)
-                .then(() => {                    
-                    runInAction(() => {
-                        this.client.avatarUrl = avatarUrl                        
+        const file = target.files ? target.files[0] : undefined
+        if (file) {
+            data.append('file', file)
+            addProfilePhotoReq(data).then((avatarUrl) => {
+                const _id = this.client.id || ''
+                const data: ISaveProfilePhotoResponse = {
+                    avatarUrl,
+                    _id,
+                }
+                saveProfilePhotoReq(data)
+                    .then(() => {
+                        runInAction(() => {
+                            this.client.avatarUrl = avatarUrl
+                        })
                     })
-                })
-                .catch()
-        })
+                    .catch()
+            })
+        }
     }
 
     @action.bound
@@ -243,13 +247,14 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public submutNewSettings() {
-        this.newSettings.id = this.client.id        
+        this.newSettings.id = this.client.id
         updateClientSettings(this.newSettings)
-            .then((res) => {
+            .then(() => {
                 runInAction(() => {
                     this.authClient()
                     this.mainStore.error = ''
-                    this.mainStore.success = "Your new settings were successfully updated!"
+                    this.mainStore.success =
+                        'Your new settings were successfully updated!'
                 })
             })
             .catch((err) => {

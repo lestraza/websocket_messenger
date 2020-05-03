@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { IUser } from '../Auth/store/Auth.interface'
 
 export interface IConfirmProps {
     onConfirm: () => void
