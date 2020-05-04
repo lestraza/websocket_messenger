@@ -37,11 +37,13 @@ export default class AddContact extends React.Component<IAddContactProps> {
         findContactByEmail()
         .then(() => {
             runInAction(() => {
-                this.showConfirm = true
+                this.isConfirmShown = true
             })
         })
         .catch((err) => {
-            this.mainStore.error = err.error
+            runInAction(() => {
+                this.mainStore.error = err.error
+            })    
         })
     }
 
@@ -51,11 +53,11 @@ export default class AddContact extends React.Component<IAddContactProps> {
         addContact()
     }
     @observable
-    public showConfirm: boolean = false
+    public isConfirmShown: boolean = false
 
     @action.bound
     public onClickCloseModal() {
-        this.showConfirm = false
+        this.isConfirmShown = false
     }
     public render() {
         const { email, name, lastname } = this.dialogStore.newContact
@@ -89,7 +91,7 @@ export default class AddContact extends React.Component<IAddContactProps> {
                             value={email}
                         />
                     </form>
-                    {this.showConfirm && (
+                    {this.isConfirmShown && (
                         <Confirm
                             title={`Add to contacts ${name} ${lastname}?`}
                             onConfirm={this.onClickAddContact}
