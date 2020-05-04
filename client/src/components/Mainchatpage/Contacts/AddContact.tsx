@@ -39,7 +39,7 @@ export default class AddContact extends React.Component<IAddContactProps> {
 
     @action.bound
     public onClickAddContact() {
-        this.dialogStore.isContactReceived =false
+        this.dialogStore.isContactReceived = false
         const { addContact } = this.dialogStore
         addContact()
     }

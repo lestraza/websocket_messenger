@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 const path = require('path')
 const uuid = require('uuid').v1
+const fs = require('fs')
 
 const multer = require('multer')
 
@@ -137,10 +138,16 @@ app.post('/api/users/addAvatar', (req, res) => {
 })
 
 app.post('/api/users/saveAvatar', (req, res) => {
-    console.log(req.body)
     const { avatarUrl } = req.body
     User.findOne({ _id: req.body }, (err, user) => {
         if (user) {
+            if(user.avatarUrl) {
+                fs.unlink(__dirname + '/' + user.avatarUrl, (err)=> {
+                    if(err) {
+                        throwError(res, 413, err)
+                    }
+                })
+            }
             user.avatarUrl = avatarUrl
             user.save((err, doc) => {
                 res.status(200).json({
@@ -155,7 +162,6 @@ app.post('/api/users/saveAvatar', (req, res) => {
 
 app.get('/api/users/getContactById', (req, res) => {
     const { contactId } = req.query
-    console.log(contactId)
     User.findOne({ _id: contactId }, (err, user) => {
         if (user) {
             const { name, lastname, avatarUrl, email, _id } = user

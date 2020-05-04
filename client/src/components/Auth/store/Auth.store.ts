@@ -225,19 +225,25 @@ export class AuthStore extends AbstractStore {
         const file = target.files ? target.files[0] : undefined
         if (file) {
             data.append('file', file)
-            addProfilePhotoReq(data).then((avatarUrl) => {
+            addProfilePhotoReq(data)
+            .then((avatarUrl) => {
                 const _id = this.client.id || ''
                 const data: ISaveProfilePhotoResponse = {
                     avatarUrl,
                     _id,
                 }
-                saveProfilePhotoReq(data)
+                return saveProfilePhotoReq(data)
                     .then(() => {
                         runInAction(() => {
                             this.client.avatarUrl = avatarUrl
                         })
                     })
-                    .catch()
+                   
+            })
+            .catch((err) => {
+                runInAction(() => {
+                    this.mainStore.error = err.error
+                })
             })
         }
     }
