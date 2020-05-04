@@ -17,19 +17,37 @@ export default class DialogHeader extends React.Component<IDialogHeaderProps> {
 
     private get injected() {
         return this.props as IDialogHeaderProps & IGetStore
-    } 
+    }
 
     @action.bound
-    onClickShowDialogMenu() {
+    onClickShowDialogMenu(e: React.SyntheticEvent<HTMLDivElement>) {        
+        e.stopPropagation()
         this.dialogStore.isShowDialogMenu = true
     }
 
+    @action.bound
+    closeDialogMenu(e: MouseEvent) {
+        e.stopPropagation()
+        this.dialogStore.isShowDialogMenu = false
+    }
+
+    componentDidMount() {
+        window.addEventListener('click', this.closeDialogMenu)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('click', this.closeDialogMenu)
+    }
+
     public render() {
-        const { name, lastname} = this.authStore.client
+        const { name, lastname } = this.authStore.client
         return (
             <div className="dialog__header">
                 <div className="usercard usercard--small">
-                    <AvatarImg className="usercard__pic" user={this.authStore.client}/>
+                    <AvatarImg
+                        className="usercard__pic"
+                        user={this.authStore.client}
+                    />
                     <div className="usercard__info">{`${name} ${lastname}`}</div>
                 </div>
                 <div

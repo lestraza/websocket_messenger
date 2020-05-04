@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 export interface IConfirmProps {
-    onConfirm: () => void
+    onConfirm: (e: React.SyntheticEvent<HTMLDivElement>) => void
     onReject: () => void
     title: string
 }
