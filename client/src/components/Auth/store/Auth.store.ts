@@ -88,7 +88,7 @@ export class AuthStore extends AbstractStore {
     }
 
     @action.bound
-    public registerNewClient() {
+    public registerNewClient(): Promise<void> {
         return registerClient(this.clientRegisterProps)
             .then(() => {
                 runInAction(() => {
@@ -100,11 +100,6 @@ export class AuthStore extends AbstractStore {
                         avatarUrl: '',
                     }
                     this.mainStore.error = ''
-                })
-            })
-            .catch((err) => {
-                runInAction(() => {
-                    this.mainStore.error = err.error
                 })
             })
     }
