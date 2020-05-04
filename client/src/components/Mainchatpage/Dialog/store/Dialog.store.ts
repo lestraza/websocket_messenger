@@ -27,9 +27,6 @@ export class DialogStore extends AbstractStore {
     public newContact: IUser = { ...initContact }
 
     @observable
-    public isContactReceived: boolean = false
-
-    @observable
     public contacts: IContactResponse[] = []
 
     @observable
@@ -88,11 +85,11 @@ export class DialogStore extends AbstractStore {
     }
 
     @action.bound
-    public findContactByEmail() {
+    public findContactByEmail(): Promise<void> {
         if (this.isAlreadyInContacts) {
-            return
+            return Promise.reject()
         } else {
-            findContactReq(this.newContact.email || '')
+            return findContactReq(this.newContact.email || '')
                 .then((res) => {
                     runInAction(() => {
                         this.newContact.id = res.id
@@ -100,12 +97,9 @@ export class DialogStore extends AbstractStore {
                         this.newContact.lastname = res.lastname
                         this.isShowAddContactModal = true
                         this.mainStore.error = ''
-                        this.isContactReceived = true
                     })
                 })
-                .catch((err) => {
-                    this.mainStore.error = err.error
-                })
+                
         }
     }
 
@@ -144,13 +138,11 @@ export class DialogStore extends AbstractStore {
                     this.currentContact = { ...contact }
                     this.isShowAddContactModal = false
                     this.newContact = { ...initContact }
-                    this.isContactReceived = false
                     this.contacts = [...this.contacts, contact]
                     this.mainStore.error = ''
                 })
             })
             .catch((err) => {
-                this.isContactReceived = false
                 this.mainStore.error = err.error
             })
     }
