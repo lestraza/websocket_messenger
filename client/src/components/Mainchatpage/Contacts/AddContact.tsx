@@ -1,6 +1,6 @@
 import * as React from 'react'
 import FormInput from '../../Commons/FormInput'
-import { action } from 'mobx'
+import { action, observable, runInAction } from 'mobx'
 import { IGetStore } from '../../../store/MainStore'
 import { inject, observer } from 'mobx-react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -35,23 +35,30 @@ export default class AddContact extends React.Component<IAddContactProps> {
         e.preventDefault()
         const { findContactByEmail } = this.dialogStore
         findContactByEmail()
+        .then(() => {
+            runInAction(() => {
+                this.showConfirm = true
+            })
+        })
+        .catch((err) => {
+            this.mainStore.error = err.error
+        })
     }
 
     @action.bound
     public onClickAddContact() {
-        this.dialogStore.isContactReceived = false
         const { addContact } = this.dialogStore
         addContact()
     }
+    @observable
+    public showConfirm: boolean = false
 
     @action.bound
     public onClickCloseModal() {
-        const { showOrCloseAddContactModal } = this.dialogStore
-        showOrCloseAddContactModal()
+        this.showConfirm = false
     }
     public render() {
         const { email, name, lastname } = this.dialogStore.newContact
-        const { isContactReceived } = this.dialogStore
         const { error } = this.mainStore
 
         return (
@@ -82,14 +89,14 @@ export default class AddContact extends React.Component<IAddContactProps> {
                             value={email}
                         />
                     </form>
-                    {isContactReceived && (
+                    {this.showConfirm && (
                         <Confirm
                             title={`Add to contacts ${name} ${lastname}?`}
                             onConfirm={this.onClickAddContact}
                             onReject={this.onClickCloseModal}
                         />
                     )}
-                    <Error error={error} />
+                    <Error error={error}/>
                 </div>
             </>
         )
