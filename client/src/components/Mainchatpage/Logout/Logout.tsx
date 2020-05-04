@@ -30,7 +30,6 @@ export default class Logout extends React.Component<ILogoutProps> {
 
     @action.bound
     private onClickLogout() {
-        console.log('logout');
         const { logout } = this.authStore
         logout()
     }

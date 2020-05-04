@@ -72,7 +72,6 @@ export default class RegisterClient extends React.Component<
             password,
         } = this.authStore.clientRegisterProps
         const { error, success} = this.mainStore
-        console.log(error);
         
         return (
             <div className="create-account form">
