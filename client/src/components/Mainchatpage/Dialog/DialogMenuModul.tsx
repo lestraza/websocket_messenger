@@ -22,16 +22,17 @@ export default class DialogMenuModal extends React.Component<
     private hasShowComfirm: boolean = false
 
     @action.bound
-    onClickShowConfirm() {
-        if(!this.hasShowComfirm) {
-            this.hasShowComfirm = true
-        } else {
-            this.hasShowComfirm = false
-        }        
+    onClickShowConfirm(e: React.SyntheticEvent<HTMLDivElement>) {
+        e.stopPropagation()
+        this.hasShowComfirm = true
+    }
+    @action.bound
+    onClickCloseConfirm() {
+        this.hasShowComfirm = false
     }
 
     @action.bound
-    private onClickDeleteContact() {
+    private onClickDeleteContact() {        
         const { deleteContact } = this.dialogStore
         deleteContact()
     }
@@ -48,7 +49,7 @@ export default class DialogMenuModal extends React.Component<
                 {this.hasShowComfirm ? (<Confirm
                     title={`Are you sure delete this contact?`}
                     onConfirm={this.onClickDeleteContact}
-                    onReject={this.onClickShowConfirm}
+                    onReject={this.onClickCloseConfirm}
                 />) : ''}
                 
                 <div className="dialog-menu-modal__item">Delete chat</div>
