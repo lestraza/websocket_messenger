@@ -30,16 +30,18 @@ export default class Logout extends React.Component<ILogoutProps> {
 
     @action.bound
     private onClickLogout() {
+        console.log('logout');
         const { logout } = this.authStore
         logout()
     }
     public render() {
         return (
-            <div className="logout-container">
-                <div onClick={this.onClickShowConfirm}>
-                    <FontAwesomeIcon icon={faSignOutAlt} size={'lg'} />
+            <>
+                <div className="logout-container">
+                    <div onClick={this.onClickShowConfirm}>
+                        <FontAwesomeIcon icon={faSignOutAlt} size={'lg'} />
+                    </div>
                 </div>
-
                 {this.hasShowComfirm && (
                     <div className="logout__confirm">
                         <Confirm
@@ -49,7 +51,7 @@ export default class Logout extends React.Component<ILogoutProps> {
                         />
                     </div>
                 )}
-            </div>
+            </>
         )
     }
 }

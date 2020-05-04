@@ -91,6 +91,7 @@ app.post('/api/users/auth', auth, (req, res) => {
         id: req.user._id,
         avatarUrl: req.user.avatarUrl,
         name: req.user.name,
+        email: req.user.email,
         lastname: req.user.lastname,
         contacts: req.user.contacts,
     })
