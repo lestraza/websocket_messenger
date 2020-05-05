@@ -51,8 +51,6 @@ export default class DialogMenuModal extends React.Component<
                     onConfirm={this.onClickDeleteContact}
                     onReject={this.onClickCloseConfirm}
                 />) : ''}
-                
-                <div className="dialog-menu-modal__item">Delete chat</div>
             </div>
         )
     }
