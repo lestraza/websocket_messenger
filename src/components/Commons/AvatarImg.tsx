@@ -21,7 +21,7 @@ export default class AvatarImg extends React.Component<IAvatarImgProps> {
     }
 
     @computed
-    private get backgroundImage() {        
+    private get backgroundImage() {
         const { avatarUrl } = this.props.user
         return {
             backgroundImage: `url(${
@@ -34,7 +34,7 @@ export default class AvatarImg extends React.Component<IAvatarImgProps> {
     public render() {
         const { className } = this.props
         return (
-            <div className={className} style={this.backgroundImage} >
+            <div className={className} style={this.backgroundImage}>
                 {this.props.children}
             </div>
         )

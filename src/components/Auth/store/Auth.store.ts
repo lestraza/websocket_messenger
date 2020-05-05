@@ -89,19 +89,18 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public registerNewClient(): Promise<void> {
-        return registerClient(this.clientRegisterProps)
-            .then(() => {
-                runInAction(() => {
-                    this.clientRegisterProps = {
-                        name: '',
-                        lastname: '',
-                        email: '',
-                        password: '',
-                        avatarUrl: '',
-                    }
-                    this.mainStore.error = ''
-                })
+        return registerClient(this.clientRegisterProps).then(() => {
+            runInAction(() => {
+                this.clientRegisterProps = {
+                    name: '',
+                    lastname: '',
+                    email: '',
+                    password: '',
+                    avatarUrl: '',
+                }
+                this.mainStore.error = ''
             })
+        })
     }
 
     @action.bound
@@ -124,23 +123,6 @@ export class AuthStore extends AbstractStore {
                     this.mainStore.error = err.error
                 })
             })
-    }
-
-    @action.bound
-    public getCookie(name: string) {
-        const decodeCookies: string[] = decodeURIComponent(
-            document.cookie
-        ).split(';')
-        for (let i = 0; i < decodeCookies.length; i++) {
-            let z = decodeCookies[i]
-            while (z.charAt(0) === ' ') {
-                z = z.substring(1)
-            }
-            if (z.indexOf(name) === 0) {
-                return z.substring(name.length, z.length)
-            }
-        }
-        return
     }
 
     @action.bound
@@ -179,7 +161,7 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     private connectSocket() {
-        this.socket = io('http://localhost:3006/', {
+        this.socket = io.connect(this.mainStore.serverUrl, {
             query: {
                 id: this.client.id,
             },
@@ -220,25 +202,23 @@ export class AuthStore extends AbstractStore {
         if (file) {
             data.append('file', file)
             addProfilePhotoReq(data)
-            .then((avatarUrl) => {
-                const _id = this.client.id || ''
-                const data: ISaveProfilePhotoResponse = {
-                    avatarUrl,
-                    _id,
-                }
-                return saveProfilePhotoReq(data)
-                    .then(() => {
+                .then((avatarUrl) => {
+                    const _id = this.client.id || ''
+                    const data: ISaveProfilePhotoResponse = {
+                        avatarUrl,
+                        _id,
+                    }
+                    return saveProfilePhotoReq(data).then(() => {
                         runInAction(() => {
                             this.client.avatarUrl = avatarUrl
                         })
                     })
-                   
-            })
-            .catch((err) => {
-                runInAction(() => {
-                    this.mainStore.error = err.error
                 })
-            })
+                .catch((err) => {
+                    runInAction(() => {
+                        this.mainStore.error = err.error
+                    })
+                })
         }
     }
 

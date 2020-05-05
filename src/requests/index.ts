@@ -1,6 +1,9 @@
 import { IMessage } from './../components/Mainchatpage/Dialog/store/Dialog.interface'
 import { IUser } from './../components/Auth/store/Auth.interface'
 import { IChangeSettingsProps } from './../components/Mainchatpage/SettingsBar/store/Settings.store'
+import { getServerUrl } from '../env'
+
+const baseUrl = getServerUrl()
 
 export interface IRegisterResponse {
     success: string
@@ -28,7 +31,7 @@ export interface ISaveProfilePhotoResponse {
 
 export function registerClient(clientData: IUser) {
     return new Promise<IRegisterResponse>((resolve, reject) => {
-        return fetch('/api/users/register', {
+        return fetch(`${baseUrl}/api/users/register`, {
             method: 'POST',
             body: JSON.stringify(clientData),
             headers: {
@@ -48,7 +51,7 @@ export function registerClient(clientData: IUser) {
 
 export function loginClientReq(clientData: IUser) {
     return new Promise<ILoginResponse>((resolve, reject) => {
-        return fetch('/api/users/login', {
+        return fetch(`${baseUrl}/api/users/login`, {
             method: 'POST',
             body: JSON.stringify(clientData),
             headers: {
@@ -68,7 +71,7 @@ export function loginClientReq(clientData: IUser) {
 
 export function authClientReq(token: string) {
     return new Promise<IAuthResponse>((resolve, reject) => {
-        return fetch('/api/users/auth', {
+        return fetch(`${baseUrl}/api/users/auth`, {
             method: 'POST',
             body: JSON.stringify({ token }),
             headers: {
@@ -88,7 +91,7 @@ export function authClientReq(token: string) {
 
 export function addProfilePhotoReq(data: FormData) {
     return new Promise<string>((resolve, reject) => {
-        return fetch('/api/users/addAvatar', {
+        return fetch(`${baseUrl}/api/users/addAvatar`, {
             method: 'POST',
             body: data,
         }).then((res) => {
@@ -104,7 +107,7 @@ export function addProfilePhotoReq(data: FormData) {
 }
 export function saveProfilePhotoReq(data: ISaveProfilePhotoResponse) {
     return new Promise<string>((resolve, reject) => {
-        return fetch('/api/users/saveAvatar', {
+        return fetch(`${baseUrl}/api/users/saveAvatar`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -124,7 +127,7 @@ export function saveProfilePhotoReq(data: ISaveProfilePhotoResponse) {
 
 export function updateClientSettings(data: IChangeSettingsProps) {
     return new Promise<IChangeSettingsProps>((resolve, reject) => {
-        return fetch('/api/users/updateClient', {
+        return fetch(`${baseUrl}/api/users/updateClient`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -153,11 +156,14 @@ export interface IContactResponse {
 
 export function getContactById(contactId: string) {
     return new Promise<IContactResponse>((res, rej) => {
-        return fetch(`/api/users/getContactById?contactId=${contactId}`, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
+        return fetch(
+            `${baseUrl}/api/users/getContactById?contactId=${contactId}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        )
             .then((res) => res.json())
             .then((parsedRes: IContactResponse) => {
                 res(parsedRes)
@@ -190,7 +196,7 @@ export interface IFindContactProps {
 
 export function findContactReq(email: string) {
     return new Promise<IFindContactResponse>((resolve, reject) => {
-        return fetch('/api/users/findContact', {
+        return fetch(`${baseUrl}/api/users/findContact`, {
             method: 'POST',
             body: JSON.stringify({ email }),
             headers: {
@@ -210,7 +216,7 @@ export function findContactReq(email: string) {
 
 export function addContactReq(data: IAddContactProps) {
     return new Promise<IContactResponse>((resolve, reject) => {
-        return fetch('/api/users/addContact', {
+        return fetch(`${baseUrl}/api/users/addContact`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -232,11 +238,14 @@ export interface IDialogResponse {
 }
 export function findDialogById(dialogId: string) {
     return new Promise<IDialogResponse>((res, rej) => {
-        return fetch(`/api/users/getDialogById?dialogId=${dialogId}`, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
+        return fetch(
+            `${baseUrl}/api/users/getDialogById?dialogId=${dialogId}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        )
             .then((res) => res.json())
             .then((parsedRes: IDialogResponse) => {
                 res(parsedRes)
@@ -254,7 +263,7 @@ export interface IContact {
 
 export function deleteContactReq(data: IAddContactProps) {
     return new Promise<IContact[]>((resolve, rej) => {
-        return fetch('/api/users/deleteContact', {
+        return fetch(`${baseUrl}/api/users/deleteContact`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {

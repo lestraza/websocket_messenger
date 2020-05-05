@@ -3,6 +3,7 @@ import { DialogStore } from './../components/Mainchatpage/Dialog/store/Dialog.st
 import { AbstractStore } from './Abstract.store'
 import { AuthStore } from './../components/Auth/store/Auth.store'
 import { observable, action, computed } from 'mobx'
+import { getEnv, getServerUrl } from '../env'
 export interface IInnerStores {
     dialogStore: DialogStore
     mainStore: MainStore
@@ -26,14 +27,12 @@ class MainStore extends AbstractStore {
 
     @computed
     public get env() {
-        return document.location.origin === 'http://localhost:3000' ? 'dev' : 'prod'
+        return getEnv()
     }
 
     @computed
     public get serverUrl() {
-        return this.env === 'dev'
-            ? 'http://localhost:3006'
-            : 'https://mayo-server.herokuapps.com'
+        return getServerUrl()
     }
 
     @observable
