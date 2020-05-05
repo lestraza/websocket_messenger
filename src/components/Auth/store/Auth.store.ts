@@ -113,6 +113,7 @@ export class AuthStore extends AbstractStore {
                         email: '',
                         password: '',
                     }
+                    localStorage.setItem('user_token', res.token)
                     this.clientId = res.id
                     this.mainStore.error = ''
                     this.authClient()
@@ -144,8 +145,7 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public authClient() {
-        const cookieName: string = 'user_token='
-        const token: string | undefined = this.getCookie(cookieName)
+        const token = localStorage.getItem('user_token')
         if (token) {
             return authClientReq(token)
                 .then((res) => {
@@ -200,8 +200,7 @@ export class AuthStore extends AbstractStore {
 
     @action.bound
     public logout() {
-        const cookieName: string = 'user_token='
-        document.cookie = `${cookieName}; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`
+        localStorage.setItem('user_token', '')
         this.authClient()
     }
 

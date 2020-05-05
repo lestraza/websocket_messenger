@@ -8,6 +8,7 @@ export interface IRegisterResponse {
 export interface ILoginResponse {
     success: string
     id: string
+    token: string
 }
 export interface IAuthResponse {
     success: string
