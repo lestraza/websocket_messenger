@@ -51,11 +51,19 @@ export class DialogStore extends AbstractStore {
     public isAlreadyInContacts: boolean = false
 
     @observable
-    isShowDialogMenu: boolean = false
+    public isShowDialogMenu: boolean = false
 
     @computed
     private get authStore() {
         return this.mainStore.getStore('authStore') as AuthStore
+    }
+
+    @action.bound
+    scrollToItem(item: HTMLElement) {
+        const lastMessage = this.currentDialog[this.currentDialog.length - 1]
+        if(lastMessage.text === item.innerText) {
+            item.scrollIntoView()
+        }
     }
 
     @action.bound
@@ -89,17 +97,15 @@ export class DialogStore extends AbstractStore {
         if (this.isAlreadyInContacts) {
             return Promise.reject()
         } else {
-            return findContactReq(this.newContact.email || '')
-                .then((res) => {
-                    runInAction(() => {
-                        this.newContact.id = res.id
-                        this.newContact.name = res.name
-                        this.newContact.lastname = res.lastname
-                        this.isShowAddContactModal = true
-                        this.mainStore.error = ''
-                    })
+            return findContactReq(this.newContact.email || '').then((res) => {
+                runInAction(() => {
+                    this.newContact.id = res.id
+                    this.newContact.name = res.name
+                    this.newContact.lastname = res.lastname
+                    this.isShowAddContactModal = true
+                    this.mainStore.error = ''
                 })
-                
+            })
         }
     }
 
